@@ -62,7 +62,7 @@
     z-index: 0;
     opacity: 0;
     filter: saturate(0.6) brightness(0.5);
-    transition: opacity 1.2s ease;
+    transition: opacity 1.5s ease;
   }
   #bg-video.visible { opacity: 0.35; }
 
@@ -129,7 +129,6 @@
     font-size: 38px;
     position: relative;
     overflow: hidden;
-    cursor: none;
   }
   .avatar-emoji { line-height: 1; }
 
@@ -271,19 +270,16 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
+<!-- ✦ Put your video file in the same folder and change "bg.mp4" to your filename -->
 <video id="bg-video" autoplay loop muted playsinline src="bg.mp4"></video>
-<audio id="bg-audio" loop></audio>
 
 <div class="grain"></div>
 <div class="vignette"></div>
 
-<!-- Secret upload input — only triggered by clicking the avatar -->
-<input type="file" id="mediaUpload" accept="video/*,audio/*" style="display:none">
-
 <main class="page">
   <div class="profile">
     <div class="avatar-wrap">
-      <div class="avatar" id="avatar">
+      <div class="avatar">
         <span class="avatar-emoji">✦</span>
       </div>
     </div>
@@ -351,36 +347,14 @@ document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; })
   ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
   requestAnimationFrame(loop);
 })();
-document.querySelectorAll('a, button, label').forEach(el => {
+document.querySelectorAll('a').forEach(el => {
   el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
   el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
 });
 
-// Video fade-in on load
+// Fade video in once it's ready
 const video = document.getElementById('bg-video');
 video.addEventListener('canplay', () => video.classList.add('visible'), { once: true });
-
-// Secret upload — click the avatar to swap video/audio
-const audio      = document.getElementById('bg-audio');
-const mediaInput = document.getElementById('mediaUpload');
-document.getElementById('avatar').addEventListener('click', () => mediaInput.click());
-mediaInput.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const url = URL.createObjectURL(file);
-  if (file.type.startsWith('video/')) {
-    audio.pause(); audio.src = '';
-    video.classList.remove('visible');
-    video.src = url;
-    video.load();
-    video.play();
-    setTimeout(() => video.classList.add('visible'), 100);
-  } else {
-    video.pause(); video.classList.remove('visible');
-    audio.src = url;
-    audio.play().catch(() => {});
-  }
-});
 </script>
 </body>
 </html>
