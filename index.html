@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Links</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c96f;
+    --cream: #f5ede0;
+    --dark: #0a0806;
+    --glass: rgba(255,255,255,0.06);
+    --glass-border: rgba(201,168,76,0.25);
+    --text: #f0e6d3;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'DM Mono', monospace;
+    background: var(--dark);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease, width 0.2s, height 0.2s, opacity 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold-light);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, opacity 0.3s;
+    opacity: 0.5;
+  }
+  .cursor.hover { width: 20px; height: 20px; }
+  .cursor-ring.hover { width: 60px; height: 60px; opacity: 0.2; }
+
+  /* Video background */
+  #bg-video {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0.35;
+    filter: saturate(0.6) brightness(0.5);
+    transition: opacity 0.5s;
+  }
+  #bg-video.hidden { opacity: 0; }
+
+  /* Noise grain overlay */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+  }
+
+  /* Gradient vignette */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
+  }
+
+  /* Main layout */
+  .page {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 24px 80px;
+  }
+
+  /* Profile section */
+  .profile {
+    text-align: center;
+    margin-bottom: 44px;
+    animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .avatar-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+  .avatar-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: conic-gradient(var(--gold), transparent, var(--gold-light), transparent, var(--gold));
+    animation: spin 6s linear infinite;
+    z-index: -1;
+  }
+  .avatar {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2a1f10, #1a1208);
+    border: 2px solid var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+  .avatar img.loaded { display: block; }
+  .avatar-emoji { line-height: 1; }
+
+  .name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    letter-spacing: 0.02em;
+    background: linear-gradient(135deg, var(--cream), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  .bio {
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    color: rgba(240,230,211,0.5);
+    text-transform: uppercase;
+    max-width: 280px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Gold divider */
+  .divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 28px auto;
+    animation: fadeUp 1s 0.2s both;
+  }
+
+  /* Social links */
+  .links {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .link-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 22px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.7s both;
+  }
+  .link-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--gold), var(--gold-light));
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+    border-radius: 0 2px 2px 0;
+  }
+  .link-item:hover {
+    transform: translateX(6px) translateY(-2px);
+    border-color: rgba(201,168,76,0.6);
+    background: rgba(201,168,76,0.08);
+    box-shadow: 0 8px 32px rgba(201,168,76,0.12), 0 2px 8px rgba(0,0,0,0.4);
+  }
+  .link-item:hover::before { transform: scaleY(1); }
+
+  .link-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.3s ease;
+  }
+  .link-item:hover .link-icon { transform: rotate(-5deg) scale(1.1); }
+
+  .link-info { flex: 1; min-width: 0; }
+  .link-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .link-sub {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(240,230,211,0.4);
+    margin-top: 2px;
+  }
+
+  .link-arrow {
+    color: var(--gold);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.3s ease;
+    font-size: 18px;
+  }
+  .link-item:hover .link-arrow { opacity: 1; transform: translateX(0); }
+
+  /* Staggered animation delays */
+  .link-item:nth-child(1) { animation-delay: 0.3s; }
+  .link-item:nth-child(2) { animation-delay: 0.4s; }
+  .link-item:nth-child(3) { animation-delay: 0.5s; }
+  .link-item:nth-child(4) { animation-delay: 0.6s; }
+  .link-item:nth-child(5) { animation-delay: 0.7s; }
+  .link-item:nth-child(6) { animation-delay: 0.8s; }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .media-panel { padding: 10px 16px; gap: 8px; bottom: 16px; }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Video background -->
+<video id="bg-video" autoplay loop muted playsinline></video>
+<!-- Hidden audio -->
+<audio id="bg-audio" loop></audio>
+
+<!-- Visual layers -->
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<!-- Hidden media input (triggered by avatar click) -->
+<input type="file" id="mediaUpload" accept="video/*,audio/*" style="display:none">
+
+<!-- Visual layers -->
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<!-- Main page content -->
+<main class="page">
+  <div class="profile">
+    <div class="avatar-wrap">
+      <div class="avatar" id="avatar" title="">
+        <span class="avatar-emoji">✦</span>
+        <img id="avatarImg" src="" alt=""/>
+      </div>
+    </div>
+    <h1 class="name" id="userName">Your Name</h1>
+    <p class="bio" id="userBio">Creator · Designer · Dreamer</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="links" id="linksContainer">
+    <!-- Links are injected by JS -->
+  </div>
+</main>
+
+
+
+<script>
+// ──────────────────────────────────────────
+//  CUSTOMIZE YOUR LINKS HERE
+// ──────────────────────────────────────────
+const CONFIG = {
+  name: "Your Name",
+  bio: "Creator · Designer · Dreamer",
+  avatarEmoji: "✦",
+  links: [
+    { icon: "𝕏", title: "Twitter / X",    sub: "@yourhandle",       url: "https://x.com/",         color: "#1da1f2" },
+    { icon: "▶", title: "YouTube",         sub: "youtube.com",       url: "https://youtube.com/",   color: "#ff0000" },
+    { icon: "📸", title: "Instagram",      sub: "@yourhandle",       url: "https://instagram.com/", color: "#e1306c" },
+    { icon: "🎵", title: "TikTok",         sub: "@yourhandle",       url: "https://tiktok.com/",    color: "#69c9d0" },
+    { icon: "💼", title: "LinkedIn",       sub: "yourprofile",       url: "https://linkedin.com/",  color: "#0a66c2" },
+    { icon: "🐙", title: "GitHub",         sub: "yourhandle",        url: "https://github.com/",    color: "#8b949e" },
+  ]
+};
+// ──────────────────────────────────────────
+
+// Inject profile
+document.getElementById('userName').textContent = CONFIG.name;
+document.getElementById('userBio').textContent  = CONFIG.bio;
+document.querySelector('.avatar-emoji').textContent = CONFIG.avatarEmoji;
+document.title = CONFIG.name + " | Links";
+
+// Inject links
+const container = document.getElementById('linksContainer');
+CONFIG.links.forEach((link, i) => {
+  const a = document.createElement('a');
+  a.href   = link.url;
+  a.target = '_blank';
+  a.rel    = 'noopener noreferrer';
+  a.className = 'link-item';
+  a.innerHTML = `
+    <div class="link-icon" style="color:${link.color}">${link.icon}</div>
+    <div class="link-info">
+      <div class="link-title">${link.title}</div>
+      <div class="link-sub">${link.sub}</div>
+    </div>
+    <div class="link-arrow">→</div>
+  `;
+  a.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
+  a.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
+  container.appendChild(a);
+});
+
+// ──────────────────────────────────────────
+//  CURSOR
+// ──────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursorRing');
+let mx = -100, my = -100, rx = -100, ry = -100;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+(function animCursor() {
+  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animCursor);
+})();
+
+document.querySelectorAll('button, label, a').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
+  el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
+});
+
+// ──────────────────────────────────────────
+//  UNIFIED MEDIA — avatar click triggers upload (secret, only you know)
+// ──────────────────────────────────────────
+const video      = document.getElementById('bg-video');
+const audio      = document.getElementById('bg-audio');
+const mediaInput = document.getElementById('mediaUpload');
+
+document.getElementById('avatar').addEventListener('click', () => mediaInput.click());
+
+mediaInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  if (file.type.startsWith('video/')) {
+    audio.pause(); audio.src = '';
+    video.src = url;
+    video.classList.remove('hidden');
+    video.play();
+  } else {
+    video.pause(); video.classList.add('hidden');
+    audio.src = url;
+    audio.play().catch(() => {});
+  }
+});
+</script>
+</body>
+</html>
