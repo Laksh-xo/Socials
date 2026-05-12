@@ -171,6 +171,31 @@
     letter-spacing: -0.03em;
     color: #fff;
     margin-bottom: 5px;
+    animation: neonFlicker 4s infinite;
+    text-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 20px #fff,
+      0 0 40px #fff,
+      0 0 80px #fff;
+  }
+
+  .name::before, .name::after { content: none; }
+
+  @keyframes neonFlicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+      text-shadow:
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px #fff,
+        0 0 40px #fff,
+        0 0 80px #fff;
+      opacity: 1;
+    }
+    20%, 24%, 55% {
+      text-shadow: none;
+      opacity: 0.4;
+    }
   }
 
   .bio {
@@ -294,7 +319,7 @@
     <div class="avatar" id="avatarEl">
       <span class="avatar-emoji">✦</span>
     </div>
-    <h1 class="name" id="userName">Laksh &lt;3!!</h1>
+    <h1 class="name" id="userName" data-text="Laksh &lt;3!!">Laksh &lt;3!!</h1>
     <p class="bio"  id="userBio">18 | Game Developer | Content Creator | Discord Moderation | Gamer</p>
   </div>
 
@@ -339,8 +364,8 @@ if (CONFIG.avatarImg) {
   avatarEl.appendChild(img);
 }
 
-// Links
-const container = document.getElementById('linksContainer');
+// Links — use fragment to avoid repeated reflows
+const fragment = document.createDocumentFragment();
 CONFIG.links.forEach(link => {
   const a = document.createElement('a');
   a.href      = link.url;
@@ -353,8 +378,9 @@ CONFIG.links.forEach(link => {
     <div class="link-sub">${link.sub}</div>
     <div class="link-arrow">→</div>
   `;
-  container.appendChild(a);
+  fragment.appendChild(a);
 });
+document.getElementById('linksContainer').appendChild(fragment);
 
 // Enter overlay
 const overlay  = document.getElementById('enter-overlay');
@@ -367,21 +393,28 @@ function startExperience() {
   overlay.classList.add('fade-out');
   overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
 }
-enterBtn.addEventListener('click', startExperience);
-enterBtn.addEventListener('touchend', e => { e.preventDefault(); startExperience(); });
+enterBtn.addEventListener('click', startExperience, { once: true });
+enterBtn.addEventListener('touchend', e => { e.preventDefault(); startExperience(); }, { once: true });
 
-// Cursor
+// Cursor — throttled via RAF, single loop
 const cursor = document.getElementById('cursor');
-let mx = -100, my = -100;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-(function loop() {
+let mx = -100, my = -100, cursorRaf = null;
+
+function moveCursor() {
   cursor.style.left = mx + 'px';
   cursor.style.top  = my + 'px';
-  requestAnimationFrame(loop);
-})();
-document.querySelectorAll('a, button').forEach(el => {
-  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  cursorRaf = requestAnimationFrame(moveCursor);
+}
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+cursorRaf = requestAnimationFrame(moveCursor);
+
+// Use event delegation instead of per-element listeners
+document.addEventListener('mouseover', e => {
+  if (e.target.closest('a, button')) cursor.classList.add('hover');
+});
+document.addEventListener('mouseout', e => {
+  if (e.target.closest('a, button')) cursor.classList.remove('hover');
 });
 
 document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
@@ -390,44 +423,80 @@ document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
 // Video
 video.addEventListener('canplay', () => video.classList.add('visible'), { once: true });
 
-// Snowflakes
+// Snowflakes — pause when tab hidden, cancel RAF on unload
 const canvas = document.createElement('canvas');
 canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;';
 document.body.appendChild(canvas);
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d', { alpha: true });
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+let cw = canvas.width  = window.innerWidth;
+let ch = canvas.height = window.innerHeight;
 
-const flakes = Array.from({ length: 120 }, () => ({
-  x: Math.random() * window.innerWidth,
-  y: Math.random() * window.innerHeight,
+// Debounced resize to avoid thrashing
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    cw = canvas.width  = window.innerWidth;
+    ch = canvas.height = window.innerHeight;
+  }, 150);
+});
+
+const flakes = Array.from({ length: 80 }, () => ({
+  x: Math.random() * cw,
+  y: Math.random() * ch,
   r: Math.random() * 3 + 1,
   speed: Math.random() * 1.2 + 0.4,
   wind: Math.random() * 0.6 - 0.3,
   opacity: Math.random() * 0.6 + 0.3,
 }));
 
+let snowRaf = null;
+let paused  = false;
+
 function drawSnow() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  flakes.forEach(f => {
+  if (paused) return;
+  ctx.clearRect(0, 0, cw, ch);
+  for (let i = 0; i < flakes.length; i++) {
+    const f = flakes[i];
     ctx.beginPath();
     ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
     ctx.fill();
     f.y += f.speed;
     f.x += f.wind;
-    if (f.y > canvas.height) { f.y = -f.r; f.x = Math.random() * canvas.width; }
-    if (f.x > canvas.width)  { f.x = 0; }
-    if (f.x < 0)             { f.x = canvas.width; }
-  });
-  requestAnimationFrame(drawSnow);
+    if (f.y > ch) { f.y = -f.r; f.x = Math.random() * cw; }
+    if (f.x > cw) { f.x = 0; }
+    if (f.x < 0)  { f.x = cw; }
+  }
+  snowRaf = requestAnimationFrame(drawSnow);
 }
-drawSnow();
+snowRaf = requestAnimationFrame(drawSnow);
+
+// Pause all loops when tab is hidden — huge RAM/CPU saver
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    paused = true;
+    cancelAnimationFrame(snowRaf);
+    cancelAnimationFrame(cursorRaf);
+    video.pause();
+  } else {
+    paused = false;
+    snowRaf   = requestAnimationFrame(drawSnow);
+    cursorRaf = requestAnimationFrame(moveCursor);
+    video.play().catch(() => {});
+  }
+});
+
+// Full cleanup on page unload
+window.addEventListener('pagehide', () => {
+  cancelAnimationFrame(snowRaf);
+  cancelAnimationFrame(cursorRaf);
+  video.pause();
+  video.src = '';
+  ctx.clearRect(0, 0, cw, ch);
+}, { once: true });
+
 </script>
 </body>
 </html>
