@@ -372,6 +372,13 @@
   @media (max-width: 480px) {
     .page { padding: 40px 16px 60px; }
   }
+
+  @media (hover: none) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+    #enter-overlay { cursor: pointer; }
+    #enter-btn { cursor: pointer; }
+  }
 </style>
 </head>
 <body>
@@ -393,7 +400,7 @@
 <div class="cursor-ring" id="cursorRing"></div>
 
 <!-- ✦ Put your video file in the same folder and change "bg.mp4" to your filename -->
-<video id="bg-video" loop playsinline src="bg.mp4"></video>
+<video id="bg-video" loop playsinline webkit-playsinline x5-playsinline src="bg.mp4"></video>
 
 <div class="grain"></div>
 <div class="vignette"></div>
@@ -469,20 +476,18 @@ const overlay   = document.getElementById('enter-overlay');
 const enterBtn  = document.getElementById('enter-btn');
 const video     = document.getElementById('bg-video');
 
-enterBtn.addEventListener('click', () => {
-  // This click IS the user gesture — browser will allow audio now
+function startExperience() {
   video.muted = false;
   video.play().catch(() => {
-    // If audio still blocked (e.g. low-power mode), play muted as fallback
     video.muted = true;
     video.play();
   });
-
   overlay.classList.add('fade-out');
-
-  // Remove overlay from DOM after fade
   overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
-});
+}
+
+enterBtn.addEventListener('click', startExperience);
+enterBtn.addEventListener('touchend', (e) => { e.preventDefault(); startExperience(); });
 
 // Cursor
 const cursor = document.getElementById('cursor');
