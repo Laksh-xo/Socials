@@ -11,8 +11,6 @@
     --gold-light: #e8c96f;
     --cream: #f5ede0;
     --dark: #0a0806;
-    --glass: rgba(255,255,255,0.06);
-    --glass-border: rgba(201,168,76,0.25);
     --text: #f0e6d3;
   }
 
@@ -73,7 +71,6 @@
     opacity: 0.5;
     mix-blend-mode: overlay;
   }
-
   .vignette {
     position: fixed;
     inset: 0;
@@ -82,7 +79,6 @@
     background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
   }
 
-  /* ENTER OVERLAY */
   #enter-overlay {
     position: fixed;
     inset: 0;
@@ -125,7 +121,6 @@
     color: #fff;
     letter-spacing: 0.02em;
   }
-
   .enter-cta {
     padding: 9px 28px;
     background: var(--gold);
@@ -233,87 +228,174 @@
     animation: fadeUp 1s 0.2s both;
   }
 
+  /* ── LINKS ── */
   .links {
     width: 100%;
     max-width: 440px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 11px;
   }
 
   .link-item {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 16px 22px;
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
+    gap: 14px;
+    padding: 12px 16px 12px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
     border-radius: 28px;
     text-decoration: none;
-    color: var(--text);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: #fff;
+    transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1),
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                background 0.25s ease;
     position: relative;
     overflow: hidden;
     animation: fadeUp 0.7s both;
   }
-  .link-item::before {
+
+  /* shimmer sweep on hover */
+  .link-item::after {
     content: '';
     position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, var(--gold), var(--gold-light));
-    transform: scaleY(0);
-    transition: transform 0.3s ease;
-    border-radius: 0 2px 2px 0;
+    top: 0; left: -100%; width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    transform: skewX(-15deg);
+    transition: left 0.45s ease;
+    pointer-events: none;
   }
+  .link-item:hover::after { left: 160%; }
+
   .link-item:hover {
-    transform: translateX(6px) translateY(-2px);
-    border-color: rgba(201,168,76,0.6);
-    background: rgba(201,168,76,0.08);
-    box-shadow: 0 8px 32px rgba(201,168,76,0.12), 0 2px 8px rgba(0,0,0,0.4);
+    transform: translateY(-3px) scale(1.018);
+    background: var(--c-bg, rgba(255,255,255,0.06));
+    border-color: var(--c-border, rgba(255,255,255,0.2));
+    box-shadow: 0 0 0 1px var(--c-ring, transparent),
+                0 14px 40px -8px var(--c-glow, rgba(0,0,0,0.5)),
+                0 4px 10px rgba(0,0,0,0.35);
   }
-  .link-item:hover::before { transform: scaleY(1); }
+  .link-item:active { transform: translateY(-1px) scale(1.006); }
 
   .link-icon {
-    width: 42px; height: 42px;
+    width: 48px; height: 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 22px;
+    background: var(--c-icon, rgba(255,255,255,0.08));
+    border: 1px solid var(--c-icon-border, rgba(255,255,255,0.1));
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+    z-index: 1;
+  }
+  .link-item:hover .link-icon { transform: scale(1.14) rotate(-5deg); }
+
+  .link-info { flex: 1; min-width: 0; position: relative; z-index: 1; }
+  .link-title {
+    font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+  }
+  .link-sub {
+    font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.69rem;
+    letter-spacing: 0.01em;
+    color: rgba(255,255,255,0.38);
+    margin-top: 2px;
+  }
+
+  .link-arrow {
+    color: var(--c-arrow, rgba(255,255,255,0.3));
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: all 0.25s ease;
+    font-size: 15px;
+    position: relative;
+    z-index: 1;
+    background: var(--c-icon, rgba(255,255,255,0.08));
+    border: 1px solid var(--c-icon-border, rgba(255,255,255,0.1));
+    width: 30px; height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: 20px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    transition: transform 0.3s ease;
-  }
-  .link-item:hover .link-icon { transform: rotate(-5deg) scale(1.1); }
-
-  .link-info { flex: 1; min-width: 0; }
-  .link-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .link-sub {
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(240,230,211,0.4);
-    margin-top: 2px;
-  }
-
-  .link-arrow {
-    color: var(--gold);
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: all 0.3s ease;
-    font-size: 18px;
   }
   .link-item:hover .link-arrow { opacity: 1; transform: translateX(0); }
+
+  /* Per-platform palettes */
+  .link-item[data-p="youtube"] {
+    --c-icon: rgba(255,50,50,0.22);
+    --c-icon-border: rgba(255,80,80,0.3);
+    --c-bg: rgba(255,40,40,0.07);
+    --c-border: rgba(255,60,60,0.35);
+    --c-ring: rgba(255,50,50,0.2);
+    --c-glow: rgba(255,40,40,0.4);
+    --c-arrow: rgba(255,100,100,0.9);
+  }
+  .link-item[data-p="twitch"] {
+    --c-icon: rgba(145,70,255,0.22);
+    --c-icon-border: rgba(160,90,255,0.3);
+    --c-bg: rgba(140,65,255,0.07);
+    --c-border: rgba(145,70,255,0.35);
+    --c-ring: rgba(145,70,255,0.2);
+    --c-glow: rgba(130,60,255,0.4);
+    --c-arrow: rgba(175,120,255,0.9);
+  }
+  .link-item[data-p="instagram"] {
+    --c-icon: rgba(230,75,160,0.22);
+    --c-icon-border: rgba(240,100,175,0.3);
+    --c-bg: rgba(220,70,150,0.07);
+    --c-border: rgba(230,80,165,0.35);
+    --c-ring: rgba(230,80,165,0.2);
+    --c-glow: rgba(215,65,145,0.4);
+    --c-arrow: rgba(245,130,200,0.9);
+  }
+  .link-item[data-p="steam"] {
+    --c-icon: rgba(90,150,255,0.22);
+    --c-icon-border: rgba(110,165,255,0.3);
+    --c-bg: rgba(80,140,255,0.07);
+    --c-border: rgba(90,155,255,0.35);
+    --c-ring: rgba(90,150,255,0.2);
+    --c-glow: rgba(75,135,255,0.4);
+    --c-arrow: rgba(140,185,255,0.9);
+  }
+  .link-item[data-p="roblox"] {
+    --c-icon: rgba(220,45,45,0.22);
+    --c-icon-border: rgba(235,70,70,0.3);
+    --c-bg: rgba(210,40,40,0.07);
+    --c-border: rgba(220,55,55,0.35);
+    --c-ring: rgba(220,45,45,0.2);
+    --c-glow: rgba(205,35,35,0.4);
+    --c-arrow: rgba(250,110,110,0.9);
+  }
+  .link-item[data-p="snapchat"] {
+    --c-icon: rgba(250,220,0,0.2);
+    --c-icon-border: rgba(255,235,0,0.28);
+    --c-bg: rgba(240,210,0,0.06);
+    --c-border: rgba(250,225,0,0.35);
+    --c-ring: rgba(250,225,0,0.18);
+    --c-glow: rgba(235,205,0,0.35);
+    --c-arrow: rgba(255,240,80,0.9);
+  }
+  .link-item[data-p="spotify"] {
+    --c-icon: rgba(30,215,96,0.2);
+    --c-icon-border: rgba(45,225,105,0.28);
+    --c-bg: rgba(25,205,88,0.06);
+    --c-border: rgba(30,215,96,0.32);
+    --c-ring: rgba(30,215,96,0.18);
+    --c-glow: rgba(20,195,80,0.38);
+    --c-arrow: rgba(80,235,140,0.9);
+  }
 
   .link-item:nth-child(1) { animation-delay: 0.10s; }
   .link-item:nth-child(2) { animation-delay: 0.17s; }
@@ -328,15 +410,12 @@
     from { opacity: 0; transform: translateY(24px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   @media (max-width: 480px) {
     .page { padding: 40px 16px 60px; }
     .links { max-width: 100%; }
   }
-
   @media (hover: none) {
     body { cursor: auto; }
     .cursor, .cursor-ring { display: none; }
@@ -347,7 +426,6 @@
 </head>
 <body>
 
-<!-- ENTER OVERLAY -->
 <div id="enter-overlay">
   <button id="enter-btn" aria-label="Enter site">
     <div class="enter-avatar">
@@ -356,30 +434,24 @@
     <div class="enter-name">Laksh &lt;3!!</div>
     <div class="enter-cta">Enter ↗</div>
   </button>
-  <div class="enter-dots">
-    <span></span><span></span><span></span>
-  </div>
+  <div class="enter-dots"><span></span><span></span><span></span></div>
 </div>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
 <video id="bg-video" loop playsinline webkit-playsinline src="bg.mp4"></video>
-
 <div class="grain"></div>
 <div class="vignette"></div>
 
 <main class="page">
   <div class="profile">
     <div class="avatar-wrap">
-      <div class="avatar" id="avatarEl">
-        <span class="avatar-emoji">✦</span>
-      </div>
+      <div class="avatar" id="avatarEl"><span class="avatar-emoji">✦</span></div>
     </div>
     <h1 class="name" id="userName">Laksh &lt;3!!</h1>
     <p class="bio" id="userBio">18 | Game Developer | Content Creator | Discord Moderation | Gamer</p>
   </div>
-
   <div class="divider"></div>
   <div class="links" id="linksContainer"></div>
 </main>
@@ -391,14 +463,14 @@ const CONFIG = {
   avatarEmoji: "✦",
   avatarImg:   "mygif.gif",
   links: [
-    { icon: "▶",  title: "YouTube",   sub: "@laksh",        url: "https://www.youtube.com/channel/UCYmXwWSLJvguHhP-nFo69Jg" },
-    { icon: "🎮", title: "Twitch",    sub: "lakshxplayz",   url: "https://www.twitch.tv/lakshxplayz" },
-    { icon: "📸", title: "Instagram", sub: "@lakshx.jpeg",  url: "https://www.instagram.com/lakshx.jpeg" },
-    { icon: "📸", title: "Instagram", sub: "@lakshx.playz", url: "https://www.instagram.com/lakshx.playz" },
-    { icon: "🎮", title: "Steam",     sub: "lakshx",        url: "https://steamcommunity.com/id/lakshx" },
-    { icon: "🎮", title: "Roblox",    sub: "lakshx",        url: "https://www.roblox.com/users/5496495013/profile" },
-    { icon: "👻", title: "Snapchat",  sub: "@lakshx.jpeg",  url: "https://www.snapchat.com/@lakshx.jpeg" },
-    { icon: "🎵", title: "Spotify",   sub: "lakshx",        url: "https://open.spotify.com/user/314rymteiostne2wjommzch2gmvm" },
+    { icon: "▶",  platform: "youtube",   title: "YouTube",   sub: "@laksh",          url: "https://www.youtube.com/channel/UCYmXwWSLJvguHhP-nFo69Jg" },
+    { icon: "🎮", platform: "twitch",    title: "Twitch",    sub: "lakshxplayz",     url: "https://www.twitch.tv/lakshxplayz" },
+    { icon: "📸", platform: "instagram", title: "Instagram", sub: "@lakshx.jpeg",    url: "https://www.instagram.com/lakshx.jpeg" },
+    { icon: "📸", platform: "instagram", title: "Instagram", sub: "@lakshx.playz",   url: "https://www.instagram.com/lakshx.playz" },
+    { icon: "🎮", platform: "steam",     title: "Steam",     sub: "lakshx",          url: "https://steamcommunity.com/id/lakshx" },
+    { icon: "🎮", platform: "roblox",    title: "Roblox",    sub: "lakshx",          url: "https://www.roblox.com/users/5496495013/profile" },
+    { icon: "👻", platform: "snapchat",  title: "Snapchat",  sub: "@lakshx.jpeg",    url: "https://www.snapchat.com/@lakshx.jpeg" },
+    { icon: "🎵", platform: "spotify",   title: "Spotify",   sub: "lakshx",          url: "https://open.spotify.com/user/314rymteiostne2wjommzch2gmvm" },
   ]
 };
 
@@ -409,20 +481,17 @@ document.title = CONFIG.name + " | Links";
 const avatarEl = document.getElementById('avatarEl');
 if (CONFIG.avatarImg) {
   const img = document.createElement('img');
-  img.src     = CONFIG.avatarImg;
-  img.alt     = CONFIG.name;
+  img.src = CONFIG.avatarImg; img.alt = CONFIG.name;
   img.onerror = () => { avatarEl.innerHTML = `<span class="avatar-emoji">${CONFIG.avatarEmoji}</span>`; };
-  avatarEl.innerHTML = '';
-  avatarEl.appendChild(img);
+  avatarEl.innerHTML = ''; avatarEl.appendChild(img);
 }
 
 const fragment = document.createDocumentFragment();
 CONFIG.links.forEach(link => {
   const a = document.createElement('a');
-  a.href      = link.url;
-  a.target    = '_blank';
-  a.rel       = 'noopener noreferrer';
+  a.href = link.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
   a.className = 'link-item';
+  a.dataset.p = link.platform;
   a.innerHTML = `
     <div class="link-icon">${link.icon}</div>
     <div class="link-info">
@@ -435,10 +504,9 @@ CONFIG.links.forEach(link => {
 });
 document.getElementById('linksContainer').appendChild(fragment);
 
-// Enter overlay
-const overlay  = document.getElementById('enter-overlay');
+const overlay = document.getElementById('enter-overlay');
 const enterBtn = document.getElementById('enter-btn');
-const video    = document.getElementById('bg-video');
+const video = document.getElementById('bg-video');
 
 function startExperience() {
   video.muted = false;
@@ -449,9 +517,8 @@ function startExperience() {
 enterBtn.addEventListener('click', startExperience, { once: true });
 enterBtn.addEventListener('touchend', e => { e.preventDefault(); startExperience(); }, { once: true });
 
-// Cursor
 const cursor = document.getElementById('cursor');
-const ring   = document.getElementById('cursorRing');
+const ring = document.getElementById('cursorRing');
 let mx = -100, my = -100, rx = -100, ry = -100, cursorRaf;
 
 function moveCursor() {
@@ -474,7 +541,6 @@ document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; ring
 
 video.addEventListener('canplay', () => video.classList.add('visible'), { once: true });
 
-// Snowflakes
 const canvas = document.createElement('canvas');
 canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;';
 document.body.appendChild(canvas);
@@ -503,10 +569,8 @@ function drawSnow() {
   ctx.clearRect(0, 0, cw, ch);
   for (let i = 0; i < flakes.length; i++) {
     const f = flakes[i];
-    ctx.beginPath();
-    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${f.opacity})`; ctx.fill();
     f.y += f.speed; f.x += f.wind;
     if (f.y > ch) { f.y = -f.r; f.x = Math.random() * cw; }
     if (f.x > cw) f.x = 0;
@@ -518,23 +582,16 @@ snowRaf = requestAnimationFrame(drawSnow);
 
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
-    paused = true;
-    cancelAnimationFrame(snowRaf);
-    cancelAnimationFrame(cursorRaf);
-    video.pause();
+    paused = true; cancelAnimationFrame(snowRaf); cancelAnimationFrame(cursorRaf); video.pause();
   } else {
-    paused = false;
-    snowRaf   = requestAnimationFrame(drawSnow);
-    cursorRaf = requestAnimationFrame(moveCursor);
+    paused = false; snowRaf = requestAnimationFrame(drawSnow); cursorRaf = requestAnimationFrame(moveCursor);
     video.play().catch(() => {});
   }
 });
 
 window.addEventListener('pagehide', () => {
-  cancelAnimationFrame(snowRaf);
-  cancelAnimationFrame(cursorRaf);
-  video.pause(); video.src = '';
-  ctx.clearRect(0, 0, cw, ch);
+  cancelAnimationFrame(snowRaf); cancelAnimationFrame(cursorRaf);
+  video.pause(); video.src = ''; ctx.clearRect(0, 0, cw, ch);
 }, { once: true });
 </script>
 </body>
