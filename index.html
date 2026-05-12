@@ -42,7 +42,7 @@
   .cursor-ring {
     position: fixed;
     width: 36px; height: 36px;
-    border: 1px solid rgba(255,255,255,0.6);
+    border: none;
     border-radius: 50%;
     pointer-events: none;
     z-index: 9998;
@@ -116,19 +116,10 @@
     margin-bottom: 40px;
   }
   .enter-ring-wrap::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: conic-gradient(var(--gold), transparent 40%, var(--gold-light), transparent 70%, var(--gold));
-    animation: spin 4s linear infinite;
+    content: none;
   }
   .enter-ring-wrap::after {
-    content: '';
-    position: absolute;
-    inset: 3px;
-    border-radius: 50%;
-    background: var(--dark);
+    content: none;
   }
 
   #enter-btn {
@@ -213,19 +204,13 @@
     margin-bottom: 20px;
   }
   .avatar-wrap::before {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    background: conic-gradient(var(--gold), transparent, var(--gold-light), transparent, var(--gold));
-    animation: spin 6s linear infinite;
-    z-index: -1;
+    content: none;
   }
   .avatar {
     width: 100px; height: 100px;
     border-radius: 50%;
     background: linear-gradient(135deg, #2a1f10, #1a1208);
-    border: 2px solid var(--dark);
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -284,7 +269,7 @@
     gap: 16px;
     padding: 16px 22px;
     background: var(--glass);
-    border: 1px solid var(--glass-border);
+    border: none;
     border-radius: 14px;
     text-decoration: none;
     color: var(--text);
@@ -307,7 +292,6 @@
   }
   .link-item:hover {
     transform: translateX(6px) translateY(-2px);
-    border-color: rgba(201,168,76,0.6);
     background: rgba(201,168,76,0.08);
     box-shadow: 0 8px 32px rgba(201,168,76,0.12), 0 2px 8px rgba(0,0,0,0.4);
   }
@@ -322,7 +306,7 @@
     flex-shrink: 0;
     font-size: 20px;
     background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: none;
     transition: transform 0.3s ease;
   }
   .link-item:hover .link-icon { transform: rotate(-5deg) scale(1.1); }
@@ -360,6 +344,8 @@
   .link-item:nth-child(4) { animation-delay: 0.6s; }
   .link-item:nth-child(5) { animation-delay: 0.7s; }
   .link-item:nth-child(6) { animation-delay: 0.8s; }
+  .link-item:nth-child(7) { animation-delay: 0.9s; }
+  .link-item:nth-child(8) { animation-delay: 1.0s; }
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
@@ -426,17 +412,19 @@
 //   ✦ EDIT YOUR INFO HERE
 // ═══════════════════════════════════════════
 const CONFIG = {
-  name: "Your Name",
+  name: "Laksh <3!!",
   bio: "Creator · Designer · Dreamer",
   avatarEmoji: "✦",
   avatarImg: "mygif.gif",
   links: [
-    { icon: "𝕏",  title: "Twitter / X", sub: "@yourhandle", url: "https://x.com/",         color: "#1da1f2" },
-    { icon: "▶",  title: "YouTube",     sub: "youtube.com", url: "https://youtube.com/",   color: "#ff0000" },
-    { icon: "📸", title: "Instagram",   sub: "@yourhandle", url: "https://instagram.com/", color: "#e1306c" },
-    { icon: "🎵", title: "TikTok",      sub: "@yourhandle", url: "https://tiktok.com/",    color: "#69c9d0" },
-    { icon: "💼", title: "LinkedIn",    sub: "yourprofile", url: "https://linkedin.com/",  color: "#0a66c2" },
-    { icon: "🐙", title: "GitHub",      sub: "yourhandle",  url: "https://github.com/",    color: "#8b949e" },
+    { icon: "▶",  title: "YouTube",    sub: "@laksh",          url: "https://www.youtube.com/channel/UCYmXwWSLJvguHhP-nFo69Jg", color: "#ff0000" },
+    { icon: "🎮", title: "Twitch",     sub: "lakshxplayz",     url: "https://www.twitch.tv/lakshxplayz",                        color: "#9146ff" },
+    { icon: "📸", title: "Instagram",  sub: "@lakshx.jpeg",    url: "https://www.instagram.com/lakshx.jpeg",                   color: "#e1306c" },
+    { icon: "📸", title: "Instagram",  sub: "@lakshx.playz",   url: "https://www.instagram.com/lakshx.playz",                  color: "#c13584" },
+    { icon: "🎮", title: "Steam",      sub: "lakshx",          url: "https://steamcommunity.com/id/lakshx",                    color: "#1b2838" },
+    { icon: "🎮", title: "Roblox",     sub: "lakshx",          url: "https://www.roblox.com/users/5496495013/profile",         color: "#ff0000" },
+    { icon: "👻", title: "Snapchat",   sub: "@lakshx.jpeg",    url: "https://www.snapchat.com/@lakshx.jpeg",                   color: "#fffc00" },
+    { icon: "🎵", title: "Spotify",    sub: "lakshx",          url: "https://open.spotify.com/user/314rymteiostne2wjommzch2gmvm", color: "#1db954" },
   ]
 };
 // ═══════════════════════════════════════════
