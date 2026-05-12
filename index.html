@@ -86,6 +86,109 @@
     background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
   }
 
+  /* ── ENTER OVERLAY ── */
+  #enter-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    cursor: none;
+    transition: opacity 1.2s ease;
+  }
+  #enter-overlay.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Spinning ring behind the enter button */
+  .enter-ring-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .enter-ring-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(var(--gold), transparent 40%, var(--gold-light), transparent 70%, var(--gold));
+    animation: spin 4s linear infinite;
+  }
+  .enter-ring-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--dark);
+  }
+
+  #enter-btn {
+    position: relative;
+    z-index: 1;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: var(--cream);
+    cursor: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  #enter-btn:hover { transform: scale(1.08); }
+
+  .enter-symbol {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    color: var(--gold);
+    line-height: 1;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  .enter-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(240,230,211,0.45);
+  }
+
+  /* Subtle animated dots below */
+  .enter-hint {
+    display: flex;
+    gap: 6px;
+    margin-top: 0;
+  }
+  .enter-hint span {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0.3;
+    animation: dotBlink 1.5s ease-in-out infinite;
+  }
+  .enter-hint span:nth-child(2) { animation-delay: 0.2s; }
+  .enter-hint span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dotBlink {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50%       { opacity: 0.8; transform: scale(1.4); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.8; }
+    50%       { opacity: 1; }
+  }
+
   /* Page layout */
   .page {
     position: relative;
@@ -267,11 +370,24 @@
 </head>
 <body>
 
+<!-- ── ENTER OVERLAY ── -->
+<div id="enter-overlay">
+  <div class="enter-ring-wrap">
+    <button id="enter-btn" aria-label="Enter site">
+      <span class="enter-symbol">✦</span>
+      <span class="enter-label">Enter</span>
+    </button>
+  </div>
+  <div class="enter-hint">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
 <!-- ✦ Put your video file in the same folder and change "bg.mp4" to your filename -->
-<video id="bg-video" autoplay loop muted playsinline src="bg.mp4"></video>
+<video id="bg-video" loop playsinline src="bg.mp4"></video>
 
 <div class="grain"></div>
 <div class="vignette"></div>
@@ -336,6 +452,26 @@ CONFIG.links.forEach(link => {
   container.appendChild(a);
 });
 
+// ── Enter overlay logic ──
+const overlay   = document.getElementById('enter-overlay');
+const enterBtn  = document.getElementById('enter-btn');
+const video     = document.getElementById('bg-video');
+
+enterBtn.addEventListener('click', () => {
+  // This click IS the user gesture — browser will allow audio now
+  video.muted = false;
+  video.play().catch(() => {
+    // If audio still blocked (e.g. low-power mode), play muted as fallback
+    video.muted = true;
+    video.play();
+  });
+
+  overlay.classList.add('fade-out');
+
+  // Remove overlay from DOM after fade
+  overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+});
+
 // Cursor
 const cursor = document.getElementById('cursor');
 const ring   = document.getElementById('cursorRing');
@@ -347,13 +483,12 @@ document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; })
   ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
   requestAnimationFrame(loop);
 })();
-document.querySelectorAll('a').forEach(el => {
+document.querySelectorAll('a, button').forEach(el => {
   el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
   el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
 });
 
-// Fade video in once it's ready
-const video = document.getElementById('bg-video');
+// Fade video in once it's ready (after user enters)
 video.addEventListener('canplay', () => video.classList.add('visible'), { once: true });
 </script>
 </body>
