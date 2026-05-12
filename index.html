@@ -408,7 +408,7 @@
 <main class="page">
   <div class="profile">
     <div class="avatar-wrap">
-      <div class="avatar">
+      <div class="avatar" id="avatarEl">
         <span class="avatar-emoji">✦</span>
       </div>
     </div>
@@ -444,9 +444,15 @@ const CONFIG = {
 // Inject profile
 document.getElementById('userName').textContent = CONFIG.name;
 document.getElementById('userBio').textContent  = CONFIG.bio;
-const avatarEl = document.querySelector('.avatar');
+const avatarEl = document.getElementById('avatarEl');
 if (CONFIG.avatarImg) {
-  avatarEl.innerHTML = `<img class="avatar-img" src="${CONFIG.avatarImg}" alt="${CONFIG.name}">`;
+  const img = document.createElement('img');
+  img.src = CONFIG.avatarImg;
+  img.alt = CONFIG.name;
+  img.className = 'avatar-img';
+  img.onerror = () => { avatarEl.innerHTML = `<span class="avatar-emoji">${CONFIG.avatarEmoji}</span>`; };
+  avatarEl.innerHTML = '';
+  avatarEl.appendChild(img);
 } else {
   document.querySelector('.avatar-emoji').textContent = CONFIG.avatarEmoji;
 }
