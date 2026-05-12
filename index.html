@@ -9,13 +9,13 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: linear-gradient(135deg, #000000 0%, #3a2c00 50%, #d4af37 100%);
-    --surface: rgba(0, 0, 0, 0.45);
-    --surface-hover: rgba(0, 0, 0, 0.65);
+    --bg: rgba(0, 0, 0, 0.6);
+    --surface: rgba(0, 0, 0, 0.55);
+    --surface-hover: rgba(0, 0, 0, 0.75);
     --text: #fff;
     --sub: #aaa;
-    --shadow: 0 2px 14px rgba(0,0,0,0.07);
-    --shadow-hover: 0 8px 28px rgba(0,0,0,0.12);
+    --shadow: 0 2px 14px rgba(0,0,0,0.3);
+    --shadow-hover: 0 8px 28px rgba(0,0,0,0.5);
   }
 
   body {
@@ -195,8 +195,6 @@
     gap: 11px;
     padding: 11px 16px;
     background: var(--surface);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
     border-radius: 100px;
     text-decoration: none;
     color: var(--text);
