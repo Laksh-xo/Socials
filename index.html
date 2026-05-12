@@ -3,57 +3,44 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>My Links</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<title>Laksh &lt;3!!</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --gold: #c9a84c;
-    --gold-light: #e8c96f;
-    --cream: #f5ede0;
-    --dark: #0a0806;
-    --glass: rgba(255,255,255,0.06);
-    --glass-border: rgba(201,168,76,0.25);
-    --text: #f0e6d3;
-  }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f5f3;
+    --surface: rgba(255,255,255,0.75);
+    --surface-hover: rgba(255,255,255,0.95);
+    --text: #111;
+    --sub: #999;
+    --shadow: 0 2px 14px rgba(0,0,0,0.07);
+    --shadow-hover: 0 8px 28px rgba(0,0,0,0.12);
+  }
 
   body {
     min-height: 100vh;
-    font-family: 'DM Mono', monospace;
-    background: var(--dark);
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
     color: var(--text);
     overflow-x: hidden;
     cursor: none;
   }
 
-  /* Custom cursor */
+  /* Cursor - small black dot */
   .cursor {
     position: fixed;
-    width: 10px; height: 10px;
-    background: #ffffff;
+    width: 8px; height: 8px;
+    background: #111;
     border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
-    transition: width 0.2s, height 0.2s;
-    mix-blend-mode: difference;
+    transition: width 0.15s, height 0.15s, opacity 0.15s;
   }
-  .cursor-ring {
-    position: fixed;
-    width: 36px; height: 36px;
-    border: none;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: width 0.2s, height 0.2s, opacity 0.3s;
-    opacity: 0.5;
-  }
-  .cursor.hover      { width: 20px; height: 20px; }
-  .cursor-ring.hover { width: 60px; height: 60px; opacity: 0.2; }
+  .cursor.hover { width: 20px; height: 20px; opacity: 0.4; }
 
-  /* Video background */
+  /* Video — ultra subtle under white wash */
   #bg-video {
     position: fixed;
     top: 0; left: 0;
@@ -61,126 +48,91 @@
     object-fit: cover;
     z-index: 0;
     opacity: 0;
-    filter: saturate(0.6) brightness(0.5);
-    transition: opacity 1.5s ease;
+    filter: saturate(0) brightness(1.2);
+    transition: opacity 2s ease;
   }
-  #bg-video.visible { opacity: 0.75; }
+  #bg-video.visible { opacity: 0.06; }
 
-  /* Grain overlay */
-  .grain {
+  .whitewash {
     position: fixed;
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    opacity: 0.5;
-    mix-blend-mode: overlay;
+    background: rgba(245,245,243,0.55);
   }
 
-  /* Vignette */
-  .vignette {
-    position: fixed;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
-  }
-
-  /* ── ENTER OVERLAY ── */
+  /* ENTER OVERLAY */
   #enter-overlay {
     position: fixed;
     inset: 0;
     z-index: 1000;
-    background: var(--dark);
+    background: var(--bg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0;
-    cursor: none;
-    transition: opacity 1.2s ease;
+    gap: 20px;
+    transition: opacity 0.9s ease;
   }
-  #enter-overlay.fade-out {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  /* Spinning ring behind the enter button */
-  .enter-ring-wrap {
-    position: relative;
-    width: 160px;
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 40px;
-  }
-  .enter-ring-wrap::before {
-    content: none;
-  }
-  .enter-ring-wrap::after {
-    content: none;
-  }
+  #enter-overlay.fade-out { opacity: 0; pointer-events: none; }
 
   #enter-btn {
-    position: relative;
-    z-index: 1;
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    background: transparent;
-    border: none;
-    color: var(--cream);
-    cursor: none;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    gap: 12px;
+    background: none;
+    border: none;
+    cursor: none;
+    transition: transform 0.3s ease;
   }
-  #enter-btn:hover { transform: scale(1.08); }
+  #enter-btn:hover { transform: scale(1.04); }
 
-  .enter-symbol {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.8rem;
-    color: var(--gold);
-    line-height: 1;
-    animation: pulse 2.5s ease-in-out infinite;
+  .enter-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #e0e0e0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   }
-  .enter-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
+  .enter-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .enter-name {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: -0.02em;
+  }
+
+  .enter-cta {
+    padding: 9px 26px;
+    background: #111;
+    color: #fff;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(240,230,211,0.45);
+    transition: background 0.2s, transform 0.2s;
   }
+  #enter-btn:hover .enter-cta { background: #333; }
 
-  /* Subtle animated dots below */
-  .enter-hint {
-    display: flex;
-    gap: 6px;
-    margin-top: 0;
-  }
-  .enter-hint span {
+  .enter-dots { display: flex; gap: 5px; }
+  .enter-dots span {
     width: 4px; height: 4px;
     border-radius: 50%;
-    background: var(--gold);
-    opacity: 0.3;
-    animation: dotBlink 1.5s ease-in-out infinite;
+    background: #bbb;
+    animation: blink 1.4s ease-in-out infinite;
   }
-  .enter-hint span:nth-child(2) { animation-delay: 0.2s; }
-  .enter-hint span:nth-child(3) { animation-delay: 0.4s; }
+  .enter-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .enter-dots span:nth-child(3) { animation-delay: 0.4s; }
 
-  @keyframes dotBlink {
-    0%, 100% { opacity: 0.2; transform: scale(1); }
-    50%       { opacity: 0.8; transform: scale(1.4); }
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 0.8; }
+  @keyframes blink {
+    0%, 100% { opacity: 0.25; }
     50%       { opacity: 1; }
   }
 
-  /* Page layout */
+  /* PAGE */
   .page {
     position: relative;
     z-index: 10;
@@ -188,180 +140,131 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 60px 24px 80px;
+    padding: 60px 20px 80px;
   }
 
   /* Profile */
   .profile {
     text-align: center;
-    margin-bottom: 44px;
-    animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+    margin-bottom: 32px;
+    animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both;
   }
 
-  .avatar-wrap {
-    position: relative;
-    display: inline-block;
-    margin-bottom: 20px;
-  }
-  .avatar-wrap::before {
-    content: none;
-  }
   .avatar {
-    width: 100px; height: 100px;
+    width: 86px; height: 86px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #2a1f10, #1a1208);
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 38px;
-    position: relative;
     overflow: hidden;
+    margin: 0 auto 14px;
+    background: #ddd;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
   }
-  .avatar-emoji { line-height: 1; }
-  .avatar-img {
+  .avatar-img  { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .avatar-emoji {
     width: 100%; height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    display: block;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
   }
 
   .name {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.8rem, 5vw, 2.6rem);
-    letter-spacing: 0.02em;
-    background: linear-gradient(135deg, var(--cream), var(--gold-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
+    font-size: clamp(1.4rem, 5vw, 1.9rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: #111;
+    margin-bottom: 5px;
   }
+
   .bio {
-    font-size: 0.78rem;
-    letter-spacing: 0.1em;
-    color: rgba(240,230,211,0.5);
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    color: var(--sub);
     text-transform: uppercase;
-    max-width: 280px;
-    margin: 0 auto;
-    line-height: 1.6;
   }
 
-  /* Divider */
-  .divider {
-    width: 60px; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    margin: 28px auto;
-    animation: fadeUp 1s 0.2s both;
-  }
-
-  /* Links */
+  /* LINKS — pill style */
   .links {
     width: 100%;
-    max-width: 440px;
+    max-width: 340px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 9px;
   }
 
   .link-item {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 16px 22px;
-    background: var(--glass);
-    border: none;
-    border-radius: 14px;
+    gap: 11px;
+    padding: 11px 16px;
+    background: var(--surface);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 100px;
     text-decoration: none;
     color: var(--text);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    overflow: hidden;
-    animation: fadeUp 0.7s both;
-  }
-  .link-item::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, var(--gold), var(--gold-light));
-    transform: scaleY(0);
-    transition: transform 0.3s ease;
-    border-radius: 0 2px 2px 0;
+    box-shadow: var(--shadow);
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    animation: fadeUp 0.5s both;
   }
   .link-item:hover {
-    transform: translateX(6px) translateY(-2px);
-    background: rgba(201,168,76,0.08);
-    box-shadow: 0 8px 32px rgba(201,168,76,0.12), 0 2px 8px rgba(0,0,0,0.4);
+    background: var(--surface-hover);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px) scale(1.025);
   }
-  .link-item:hover::before { transform: scaleY(1); }
 
   .link-icon {
-    width: 42px; height: 42px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    background: #efefed;
     flex-shrink: 0;
-    font-size: 20px;
-    background: rgba(255,255,255,0.06);
-    border: none;
-    transition: transform 0.3s ease;
+    transition: transform 0.2s;
   }
-  .link-item:hover .link-icon { transform: rotate(-5deg) scale(1.1); }
+  .link-item:hover .link-icon { transform: scale(1.12); }
 
-  .link-info { flex: 1; min-width: 0; }
   .link-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex: 1;
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: #111;
   }
+
   .link-sub {
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(240,230,211,0.4);
-    margin-top: 2px;
+    font-size: 0.68rem;
+    color: var(--sub);
   }
 
   .link-arrow {
-    color: var(--gold);
+    font-size: 13px;
+    color: #bbb;
     opacity: 0;
     transform: translateX(-4px);
-    transition: all 0.3s ease;
-    font-size: 18px;
+    transition: all 0.2s ease;
   }
   .link-item:hover .link-arrow { opacity: 1; transform: translateX(0); }
 
-  .link-item:nth-child(1) { animation-delay: 0.3s; }
-  .link-item:nth-child(2) { animation-delay: 0.4s; }
-  .link-item:nth-child(3) { animation-delay: 0.5s; }
-  .link-item:nth-child(4) { animation-delay: 0.6s; }
-  .link-item:nth-child(5) { animation-delay: 0.7s; }
-  .link-item:nth-child(6) { animation-delay: 0.8s; }
-  .link-item:nth-child(7) { animation-delay: 0.9s; }
-  .link-item:nth-child(8) { animation-delay: 1.0s; }
+  .link-item:nth-child(1) { animation-delay: 0.10s; }
+  .link-item:nth-child(2) { animation-delay: 0.17s; }
+  .link-item:nth-child(3) { animation-delay: 0.24s; }
+  .link-item:nth-child(4) { animation-delay: 0.31s; }
+  .link-item:nth-child(5) { animation-delay: 0.38s; }
+  .link-item:nth-child(6) { animation-delay: 0.45s; }
+  .link-item:nth-child(7) { animation-delay: 0.52s; }
+  .link-item:nth-child(8) { animation-delay: 0.59s; }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
+    from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
   }
 
   @media (max-width: 480px) {
-    .page { padding: 40px 16px 60px; }
+    .page  { padding: 44px 16px 60px; }
+    .links { max-width: 100%; }
   }
 
   @media (hover: none) {
     body { cursor: auto; }
-    .cursor, .cursor-ring { display: none; }
+    .cursor { display: none; }
     #enter-overlay { cursor: pointer; }
     #enter-btn { cursor: pointer; }
   }
@@ -369,84 +272,76 @@
 </head>
 <body>
 
-<!-- ── ENTER OVERLAY ── -->
+<!-- ENTER OVERLAY -->
 <div id="enter-overlay">
-  <div class="enter-ring-wrap">
-    <button id="enter-btn" aria-label="Enter site">
-      <span class="enter-symbol">✦</span>
-      <span class="enter-label">Enter</span>
-    </button>
-  </div>
-  <div class="enter-hint">
+  <button id="enter-btn" aria-label="Enter site">
+    <div class="enter-avatar">
+      <img src="mygif.gif" alt="Laksh" onerror="this.style.display='none'"/>
+    </div>
+    <div class="enter-name">Laksh &lt;3!!</div>
+    <div class="enter-cta">Enter ↗</div>
+  </button>
+  <div class="enter-dots">
     <span></span><span></span><span></span>
   </div>
 </div>
 
 <div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
 
-<!-- ✦ Put your video file in the same folder and change "bg.mp4" to your filename -->
 <video id="bg-video" loop playsinline webkit-playsinline x5-playsinline src="bg.mp4"></video>
-
-<div class="grain"></div>
-<div class="vignette"></div>
+<div class="whitewash"></div>
 
 <main class="page">
   <div class="profile">
-    <div class="avatar-wrap">
-      <div class="avatar" id="avatarEl">
-        <span class="avatar-emoji">✦</span>
-      </div>
+    <div class="avatar" id="avatarEl">
+      <span class="avatar-emoji">✦</span>
     </div>
-    <h1 class="name" id="userName">Your Name</h1>
-    <p class="bio" id="userBio">Creator · Designer · Dreamer</p>
+    <h1 class="name" id="userName">Laksh &lt;3!!</h1>
+    <p class="bio"  id="userBio">Creator · Designer · Dreamer</p>
   </div>
-
-  <div class="divider"></div>
 
   <div class="links" id="linksContainer"></div>
 </main>
 
 <script>
-// ═══════════════════════════════════════════
-//   ✦ EDIT YOUR INFO HERE
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════
+//  ✦ EDIT YOUR INFO HERE
+// ═══════════════════════════════════
 const CONFIG = {
-  name: "Laksh <3!!",
-  bio: "Creator · Designer · Dreamer",
+  name:        "Laksh <3!!",
+  bio:         "Creator · Designer · Dreamer",
   avatarEmoji: "✦",
-  avatarImg: "mygif.gif",
+  avatarImg:   "mygif.gif",
   links: [
-    { icon: "▶",  title: "YouTube",    sub: "@laksh",          url: "https://www.youtube.com/channel/UCYmXwWSLJvguHhP-nFo69Jg", color: "#ff0000" },
-    { icon: "🎮", title: "Twitch",     sub: "lakshxplayz",     url: "https://www.twitch.tv/lakshxplayz",                        color: "#9146ff" },
-    { icon: "📸", title: "Instagram",  sub: "@lakshx.jpeg",    url: "https://www.instagram.com/lakshx.jpeg",                   color: "#e1306c" },
-    { icon: "📸", title: "Instagram",  sub: "@lakshx.playz",   url: "https://www.instagram.com/lakshx.playz",                  color: "#c13584" },
-    { icon: "🎮", title: "Steam",      sub: "lakshx",          url: "https://steamcommunity.com/id/lakshx",                    color: "#1b2838" },
-    { icon: "🎮", title: "Roblox",     sub: "lakshx",          url: "https://www.roblox.com/users/5496495013/profile",         color: "#ff0000" },
-    { icon: "👻", title: "Snapchat",   sub: "@lakshx.jpeg",    url: "https://www.snapchat.com/@lakshx.jpeg",                   color: "#fffc00" },
-    { icon: "🎵", title: "Spotify",    sub: "lakshx",          url: "https://open.spotify.com/user/314rymteiostne2wjommzch2gmvm", color: "#1db954" },
+    { icon: "▶",  title: "YouTube",   sub: "@laksh",        url: "https://www.youtube.com/channel/UCYmXwWSLJvguHhP-nFo69Jg" },
+    { icon: "🎮", title: "Twitch",    sub: "lakshxplayz",   url: "https://www.twitch.tv/lakshxplayz" },
+    { icon: "📸", title: "Instagram", sub: "@lakshx.jpeg",  url: "https://www.instagram.com/lakshx.jpeg" },
+    { icon: "📸", title: "Instagram", sub: "@lakshx.playz", url: "https://www.instagram.com/lakshx.playz" },
+    { icon: "🎮", title: "Steam",     sub: "lakshx",        url: "https://steamcommunity.com/id/lakshx" },
+    { icon: "🎮", title: "Roblox",    sub: "lakshx",        url: "https://www.roblox.com/users/5496495013/profile" },
+    { icon: "👻", title: "Snapchat",  sub: "@lakshx.jpeg",  url: "https://www.snapchat.com/@lakshx.jpeg" },
+    { icon: "🎵", title: "Spotify",   sub: "lakshx",        url: "https://open.spotify.com/user/314rymteiostne2wjommzch2gmvm" },
   ]
 };
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════
 
-// Inject profile
+// Profile
 document.getElementById('userName').textContent = CONFIG.name;
 document.getElementById('userBio').textContent  = CONFIG.bio;
+document.title = CONFIG.name + " | Links";
+
 const avatarEl = document.getElementById('avatarEl');
 if (CONFIG.avatarImg) {
   const img = document.createElement('img');
-  img.src = CONFIG.avatarImg;
-  img.alt = CONFIG.name;
+  img.src       = CONFIG.avatarImg;
+  img.alt       = CONFIG.name;
   img.className = 'avatar-img';
-  img.onerror = () => { avatarEl.innerHTML = `<span class="avatar-emoji">${CONFIG.avatarEmoji}</span>`; };
+  img.onerror   = () => { avatarEl.innerHTML = `<span class="avatar-emoji">${CONFIG.avatarEmoji}</span>`; };
   avatarEl.innerHTML = '';
   avatarEl.appendChild(img);
-} else {
-  document.querySelector('.avatar-emoji').textContent = CONFIG.avatarEmoji;
 }
-document.title = CONFIG.name + " | Links";
 
-// Inject links
+// Links
 const container = document.getElementById('linksContainer');
 CONFIG.links.forEach(link => {
   const a = document.createElement('a');
@@ -455,51 +350,46 @@ CONFIG.links.forEach(link => {
   a.rel       = 'noopener noreferrer';
   a.className = 'link-item';
   a.innerHTML = `
-    <div class="link-icon" style="color:${link.color}">${link.icon}</div>
-    <div class="link-info">
-      <div class="link-title">${link.title}</div>
-      <div class="link-sub">${link.sub}</div>
-    </div>
+    <div class="link-icon">${link.icon}</div>
+    <div class="link-title">${link.title}</div>
+    <div class="link-sub">${link.sub}</div>
     <div class="link-arrow">→</div>
   `;
   container.appendChild(a);
 });
 
-// ── Enter overlay logic ──
-const overlay   = document.getElementById('enter-overlay');
-const enterBtn  = document.getElementById('enter-btn');
-const video     = document.getElementById('bg-video');
+// Enter overlay
+const overlay  = document.getElementById('enter-overlay');
+const enterBtn = document.getElementById('enter-btn');
+const video    = document.getElementById('bg-video');
 
 function startExperience() {
   video.muted = false;
-  video.play().catch(() => {
-    video.muted = true;
-    video.play();
-  });
+  video.play().catch(() => { video.muted = true; video.play(); });
   overlay.classList.add('fade-out');
   overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
 }
-
 enterBtn.addEventListener('click', startExperience);
-enterBtn.addEventListener('touchend', (e) => { e.preventDefault(); startExperience(); });
+enterBtn.addEventListener('touchend', e => { e.preventDefault(); startExperience(); });
 
 // Cursor
 const cursor = document.getElementById('cursor');
-const ring   = document.getElementById('cursorRing');
-let mx = -100, my = -100, rx = -100, ry = -100;
+let mx = -100, my = -100;
 document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 (function loop() {
-  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
   requestAnimationFrame(loop);
 })();
 document.querySelectorAll('a, button').forEach(el => {
-  el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
-  el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
+  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
 });
 
-// Fade video in once it's ready (after user enters)
+document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
+
+// Video
 video.addEventListener('canplay', () => video.classList.add('visible'), { once: true });
 </script>
 </body>
