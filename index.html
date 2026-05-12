@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>My Links</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
@@ -36,7 +36,7 @@
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%);
-    transition: transform 0.08s ease, width 0.2s, height 0.2s, opacity 0.2s;
+    transition: width 0.2s, height 0.2s;
     mix-blend-mode: difference;
   }
   .cursor-ring {
@@ -47,10 +47,10 @@
     pointer-events: none;
     z-index: 9998;
     transform: translate(-50%, -50%);
-    transition: transform 0.18s ease, opacity 0.3s;
+    transition: width 0.2s, height 0.2s, opacity 0.3s;
     opacity: 0.5;
   }
-  .cursor.hover { width: 20px; height: 20px; }
+  .cursor.hover      { width: 20px; height: 20px; }
   .cursor-ring.hover { width: 60px; height: 60px; opacity: 0.2; }
 
   /* Video background */
@@ -60,13 +60,13 @@
     width: 100%; height: 100%;
     object-fit: cover;
     z-index: 0;
-    opacity: 0.35;
+    opacity: 0;
     filter: saturate(0.6) brightness(0.5);
-    transition: opacity 0.5s;
+    transition: opacity 1.2s ease;
   }
-  #bg-video.hidden { opacity: 0; }
+  #bg-video.visible { opacity: 0.35; }
 
-  /* Noise grain overlay */
+  /* Grain overlay */
   .grain {
     position: fixed;
     inset: 0;
@@ -77,7 +77,7 @@
     mix-blend-mode: overlay;
   }
 
-  /* Gradient vignette */
+  /* Vignette */
   .vignette {
     position: fixed;
     inset: 0;
@@ -86,7 +86,7 @@
     background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
   }
 
-  /* Main layout */
+  /* Page layout */
   .page {
     position: relative;
     z-index: 10;
@@ -97,7 +97,7 @@
     padding: 60px 24px 80px;
   }
 
-  /* Profile section */
+  /* Profile */
   .profile {
     text-align: center;
     margin-bottom: 44px;
@@ -129,13 +129,8 @@
     font-size: 38px;
     position: relative;
     overflow: hidden;
+    cursor: none;
   }
-  .avatar img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: none;
-  }
-  .avatar img.loaded { display: block; }
   .avatar-emoji { line-height: 1; }
 
   .name {
@@ -158,7 +153,7 @@
     line-height: 1.6;
   }
 
-  /* Gold divider */
+  /* Divider */
   .divider {
     width: 60px; height: 1px;
     background: linear-gradient(90deg, transparent, var(--gold), transparent);
@@ -166,7 +161,7 @@
     animation: fadeUp 1s 0.2s both;
   }
 
-  /* Social links */
+  /* Links */
   .links {
     width: 100%;
     max-width: 440px;
@@ -251,7 +246,6 @@
   }
   .link-item:hover .link-arrow { opacity: 1; transform: translateX(0); }
 
-  /* Staggered animation delays */
   .link-item:nth-child(1) { animation-delay: 0.3s; }
   .link-item:nth-child(2) { animation-delay: 0.4s; }
   .link-item:nth-child(3) { animation-delay: 0.5s; }
@@ -259,53 +253,38 @@
   .link-item:nth-child(5) { animation-delay: 0.7s; }
   .link-item:nth-child(6) { animation-delay: 0.8s; }
 
-  /* Responsive */
-  @media (max-width: 480px) {
-    .media-panel { padding: 10px 16px; gap: 8px; bottom: 16px; }
-  }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
     to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
   }
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
 
+  @media (max-width: 480px) {
+    .page { padding: 40px 16px 60px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- Custom cursor -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- Video background -->
-<video id="bg-video" autoplay loop muted playsinline></video>
-<!-- Hidden audio -->
+<video id="bg-video" autoplay loop muted playsinline src="bg.mp4"></video>
 <audio id="bg-audio" loop></audio>
 
-<!-- Visual layers -->
 <div class="grain"></div>
 <div class="vignette"></div>
 
-<!-- Hidden media input (triggered by avatar click) -->
+<!-- Secret upload input — only triggered by clicking the avatar -->
 <input type="file" id="mediaUpload" accept="video/*,audio/*" style="display:none">
 
-<!-- Visual layers -->
-<div class="grain"></div>
-<div class="vignette"></div>
-
-<!-- Main page content -->
 <main class="page">
   <div class="profile">
     <div class="avatar-wrap">
-      <div class="avatar" id="avatar" title="">
+      <div class="avatar" id="avatar">
         <span class="avatar-emoji">✦</span>
-        <img id="avatarImg" src="" alt=""/>
       </div>
     </div>
     <h1 class="name" id="userName">Your Name</h1>
@@ -314,31 +293,27 @@
 
   <div class="divider"></div>
 
-  <div class="links" id="linksContainer">
-    <!-- Links are injected by JS -->
-  </div>
+  <div class="links" id="linksContainer"></div>
 </main>
 
-
-
 <script>
-// ──────────────────────────────────────────
-//  CUSTOMIZE YOUR LINKS HERE
-// ──────────────────────────────────────────
+// ═══════════════════════════════════════════
+//   ✦ EDIT YOUR INFO HERE
+// ═══════════════════════════════════════════
 const CONFIG = {
   name: "Your Name",
   bio: "Creator · Designer · Dreamer",
   avatarEmoji: "✦",
   links: [
-    { icon: "𝕏", title: "Twitter / X",    sub: "@yourhandle",       url: "https://x.com/",         color: "#1da1f2" },
-    { icon: "▶", title: "YouTube",         sub: "youtube.com",       url: "https://youtube.com/",   color: "#ff0000" },
-    { icon: "📸", title: "Instagram",      sub: "@yourhandle",       url: "https://instagram.com/", color: "#e1306c" },
-    { icon: "🎵", title: "TikTok",         sub: "@yourhandle",       url: "https://tiktok.com/",    color: "#69c9d0" },
-    { icon: "💼", title: "LinkedIn",       sub: "yourprofile",       url: "https://linkedin.com/",  color: "#0a66c2" },
-    { icon: "🐙", title: "GitHub",         sub: "yourhandle",        url: "https://github.com/",    color: "#8b949e" },
+    { icon: "𝕏",  title: "Twitter / X", sub: "@yourhandle", url: "https://x.com/",         color: "#1da1f2" },
+    { icon: "▶",  title: "YouTube",     sub: "youtube.com", url: "https://youtube.com/",   color: "#ff0000" },
+    { icon: "📸", title: "Instagram",   sub: "@yourhandle", url: "https://instagram.com/", color: "#e1306c" },
+    { icon: "🎵", title: "TikTok",      sub: "@yourhandle", url: "https://tiktok.com/",    color: "#69c9d0" },
+    { icon: "💼", title: "LinkedIn",    sub: "yourprofile", url: "https://linkedin.com/",  color: "#0a66c2" },
+    { icon: "🐙", title: "GitHub",      sub: "yourhandle",  url: "https://github.com/",    color: "#8b949e" },
   ]
 };
-// ──────────────────────────────────────────
+// ═══════════════════════════════════════════
 
 // Inject profile
 document.getElementById('userName').textContent = CONFIG.name;
@@ -348,11 +323,11 @@ document.title = CONFIG.name + " | Links";
 
 // Inject links
 const container = document.getElementById('linksContainer');
-CONFIG.links.forEach((link, i) => {
+CONFIG.links.forEach(link => {
   const a = document.createElement('a');
-  a.href   = link.url;
-  a.target = '_blank';
-  a.rel    = 'noopener noreferrer';
+  a.href      = link.url;
+  a.target    = '_blank';
+  a.rel       = 'noopener noreferrer';
   a.className = 'link-item';
   a.innerHTML = `
     <div class="link-icon" style="color:${link.color}">${link.icon}</div>
@@ -362,52 +337,46 @@ CONFIG.links.forEach((link, i) => {
     </div>
     <div class="link-arrow">→</div>
   `;
-  a.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
-  a.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
   container.appendChild(a);
 });
 
-// ──────────────────────────────────────────
-//  CURSOR
-// ──────────────────────────────────────────
+// Cursor
 const cursor = document.getElementById('cursor');
 const ring   = document.getElementById('cursorRing');
 let mx = -100, my = -100, rx = -100, ry = -100;
-
 document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-
-(function animCursor() {
+(function loop() {
   cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
   rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
   ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-  requestAnimationFrame(animCursor);
+  requestAnimationFrame(loop);
 })();
-
-document.querySelectorAll('button, label, a').forEach(el => {
+document.querySelectorAll('a, button, label').forEach(el => {
   el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
   el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
 });
 
-// ──────────────────────────────────────────
-//  UNIFIED MEDIA — avatar click triggers upload (secret, only you know)
-// ──────────────────────────────────────────
-const video      = document.getElementById('bg-video');
+// Video fade-in on load
+const video = document.getElementById('bg-video');
+video.addEventListener('canplay', () => video.classList.add('visible'), { once: true });
+
+// Secret upload — click the avatar to swap video/audio
 const audio      = document.getElementById('bg-audio');
 const mediaInput = document.getElementById('mediaUpload');
-
 document.getElementById('avatar').addEventListener('click', () => mediaInput.click());
-
 mediaInput.addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;
   const url = URL.createObjectURL(file);
   if (file.type.startsWith('video/')) {
     audio.pause(); audio.src = '';
+    video.classList.remove('visible');
     video.src = url;
-    video.classList.remove('hidden');
+    video.load();
     video.play();
+    setTimeout(() => video.classList.add('visible'), 100);
   } else {
-    video.pause(); video.classList.add('hidden');
+    video.pause(); video.classList.remove('visible');
     audio.src = url;
     audio.play().catch(() => {});
   }
