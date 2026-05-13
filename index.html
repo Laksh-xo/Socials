@@ -218,6 +218,7 @@
     opacity: 0;
     transform: translateY(18px);
     animation: letterIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+    animation-play-state: paused;
   }
   .name .heart {
     color: var(--gold);
@@ -225,6 +226,11 @@
     opacity: 0;
     transform: scale(0.4);
     animation: heartPop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    animation-play-state: paused;
+  }
+  #main.visible .name .letter,
+  #main.visible .name .heart {
+    animation-play-state: running;
   }
   @keyframes letterIn {
     to { opacity: 1; transform: translateY(0); }
@@ -685,17 +691,11 @@
 </main>
 
 <script>
-  /* ── cursor ── */
-  const cursor = document.getElementById('cursor');
-  const ring   = document.getElementById('cursor-ring');
-  let mx = -100, my = -100, rx = -100, ry = -100;
-
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-  document.querySelectorAll('a,button,.link-btn').forEach(el => {
-    el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
-    el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
-  });
-
-  (function animCursor() {
-    cursor.style.left = mx + 'px';
-    
+  /* ── touch detection: fix cursor:none blocking taps on mobile ── */
+  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  if (isTouch) {
+    document.body.style.cursor = 'auto';
+    document.getElementById('cursor').style.display = 'none';
+    document.getElementById('cursor-ring').style.display = 'none';
+    document.getElementById('enter-btn').style.cursor = 'pointer';
+    document.querySelectorAll('.link-btn').forEach(el => e
