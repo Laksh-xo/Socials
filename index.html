@@ -48,8 +48,8 @@
 
   #bg-video {
     position: fixed; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; z-index: 0; opacity: .12;
-    filter: saturate(.3) brightness(.4) hue-rotate(260deg);
+    object-fit: cover; z-index: 0; opacity: .38;
+    filter: saturate(.6) brightness(.55) hue-rotate(260deg);
   }
 
   .bg-glow {
@@ -219,10 +219,17 @@
     background: linear-gradient(90deg, transparent, rgba(192,132,252,.55), transparent);
   }
 
+  /* ── Multi-activity hero strip ── */
+  .hero-activity-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 5px; min-height: 44px;
+  }
   .hero-activity {
     display: flex; align-items: center; gap: 10px;
-    font-size: .68rem; color: var(--muted); letter-spacing: .06em; min-height: 22px;
+    font-size: .68rem; color: var(--muted); letter-spacing: .06em;
+    opacity: 0; transform: translateY(4px);
+    transition: opacity .35s ease, transform .35s ease;
   }
+  .hero-activity.visible { opacity: 1; transform: translateY(0); }
   .act-dot {
     width: 7px; height: 7px; border-radius: 50%; background: var(--muted);
     flex-shrink: 0; transition: background .4s;
@@ -230,6 +237,15 @@
   .act-dot.playing { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
   .act-dot.spotify { background: #1DB954; box-shadow: 0 0 8px rgba(29,185,84,.8); }
   .act-dot.dnd-d   { background: #ed4245; box-shadow: 0 0 6px rgba(237,66,69,.8); }
+
+  /* ── Activity count badge ── */
+  .act-count-badge {
+    display: none; align-items: center; gap: 5px;
+    font-size: .55rem; letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(192,132,252,.5); margin-top: 2px;
+  }
+  .act-count-badge.show { display: flex; }
+  .act-count-badge span { color: var(--cyan); font-size: .6rem; }
 
   .bottom-links {
     width: 100%; flex-shrink: 0;
@@ -283,7 +299,7 @@
   .dc-card-wrap { position: relative; min-width: 110px; flex: 1; max-width: 140px; }
   .dc-dropdown {
     position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
-    width: 290px; max-width: calc(100vw - 32px);
+    width: 300px; max-width: calc(100vw - 32px);
     border: 1px solid rgba(192,132,252,.18);
     border-radius: 10px;
     background: rgba(7,5,13,.94);
@@ -291,13 +307,28 @@
     padding: 12px; gap: 8px; z-index: 100;
     box-shadow: 0 -8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(192,132,252,.07);
     display: none; flex-direction: column;
+    max-height: 420px; overflow-y: auto;
+    scrollbar-width: thin; scrollbar-color: rgba(168,85,247,.25) transparent;
   }
+  .dc-dropdown::-webkit-scrollbar { width: 3px; }
+  .dc-dropdown::-webkit-scrollbar-track { background: transparent; }
+  .dc-dropdown::-webkit-scrollbar-thumb { background: rgba(168,85,247,.3); border-radius: 2px; }
   .dc-dropdown::after {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
     background: linear-gradient(90deg, transparent, var(--cyan), transparent);
     opacity: .35; border-radius: 10px 10px 0 0;
   }
   .dc-dropdown.open { display: flex; }
+
+  /* ── Activity section header ── */
+  .dcd-section-header {
+    font-size: .5rem; letter-spacing: .18em; text-transform: uppercase;
+    color: rgba(192,132,252,.4); padding: 2px 0 4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .dcd-section-header::after {
+    content: ''; flex: 1; height: 1px; background: rgba(192,132,252,.1);
+  }
 
   .dcd-track { display: flex; align-items: center; gap: 10px; }
   .dcd-art { width: 42px; height: 42px; border-radius: 4px; object-fit: cover; flex-shrink: 0; }
@@ -382,13 +413,11 @@
 
 <!-- Mute / unmute button -->
 <button id="mute-btn" aria-label="Mute audio">
-  <!-- Speaker icon (unmuted) -->
   <svg id="icon-sound" viewBox="0 0 24 24">
     <path d="M11 5L6 9H2v6h4l5 4V5z"/>
     <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
     <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
   </svg>
-  <!-- Muted icon (hidden by default) -->
   <svg id="icon-mute" viewBox="0 0 24 24" style="display:none">
     <path d="M11 5L6 9H2v6h4l5 4V5z"/>
     <line x1="23" y1="9" x2="17" y2="15"/>
@@ -418,9 +447,16 @@
     <h1 class="hero-name">laksh &lt;3</h1>
     <p class="hero-tagline" id="tagline"></p>
     <div class="activity-divider"></div>
-    <div class="hero-activity">
-      <span class="act-dot" id="act-dot"></span>
-      <span id="act-text">loading activity</span>
+    <!-- Multi-activity hero strip -->
+    <div class="hero-activity-wrap" id="hero-activity-wrap">
+      <div class="hero-activity" id="act-primary">
+        <span class="act-dot" id="act-dot"></span>
+        <span id="act-text">loading activity</span>
+      </div>
+      <!-- Additional activities rendered here dynamically -->
+    </div>
+    <div class="act-count-badge" id="act-count-badge">
+      <span id="act-count-num"></span> activities running
     </div>
   </div>
 
@@ -499,7 +535,6 @@
     mainEl.classList.add('visible');
     setTimeout(() => overlay.classList.add('gone'), 1000);
     video.play().catch(err => console.warn('Autoplay blocked:', err));
-    // Show mute button after entering
     setTimeout(() => muteBtn.classList.add('show'), 600);
   });
 
@@ -573,6 +608,9 @@
   const actText     = document.getElementById('act-text');
   const dcdContent  = document.getElementById('dcd-content');
   const dcHandle    = document.getElementById('dc-card-handle');
+  const heroWrap    = document.getElementById('hero-activity-wrap');
+  const actCountBadge = document.getElementById('act-count-badge');
+  const actCountNum   = document.getElementById('act-count-num');
   let spTimer = null;
 
   function setStatus(s) {
@@ -584,41 +622,114 @@
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function fmtT(ms){ const s=Math.floor(ms/1e3),m=Math.floor(s/60),h=Math.floor(m/60); return h>0?h+'h '+(m%60)+'m':m>0?m+'m '+(s%60)+'s':s+'s'; }
 
+  // ── Render hero multi-activity strip ──
+  function renderHeroActivities(sp, others, status) {
+    // Remove any previously added extra rows (keep #act-primary)
+    heroWrap.querySelectorAll('.act-extra').forEach(el => el.remove());
+
+    const allItems = [];
+
+    if (sp) {
+      allItems.push({ dotClass: 'act-dot spotify', text: sp.song + ' — ' + sp.artist });
+    }
+    others.forEach(act => {
+      if (!act.name) return;
+      allItems.push({
+        dotClass: 'act-dot playing',
+        text: act.name + (act.details ? ' · ' + act.details : '')
+      });
+    });
+
+    if (allItems.length === 0) {
+      if (status === 'offline') {
+        actDot.className = 'act-dot';
+        actText.textContent = 'not around right now';
+      } else {
+        actDot.className = 'act-dot' + (status === 'dnd' ? ' dnd-d' : '');
+        actText.textContent = 'discord · ' + (status === 'dnd' ? 'do not disturb' : status);
+      }
+      actCountBadge.classList.remove('show');
+    } else {
+      // Primary (first item)
+      actDot.className = allItems[0].dotClass;
+      actText.textContent = allItems[0].text;
+
+      // Additional items — rendered as stacked rows
+      for (let i = 1; i < allItems.length; i++) {
+        const row = document.createElement('div');
+        row.className = 'hero-activity act-extra';
+        const dot = document.createElement('span');
+        dot.className = allItems[i].dotClass;
+        const txt = document.createElement('span');
+        txt.textContent = allItems[i].text;
+        row.appendChild(dot);
+        row.appendChild(txt);
+        heroWrap.appendChild(row);
+        // Stagger fade-in
+        requestAnimationFrame(() => {
+          setTimeout(() => row.classList.add('visible'), i * 80);
+        });
+      }
+
+      // Badge if more than 1
+      if (allItems.length > 1) {
+        actCountNum.textContent = allItems.length;
+        actCountBadge.classList.add('show');
+      } else {
+        actCountBadge.classList.remove('show');
+      }
+    }
+
+    // Animate primary row in
+    requestAnimationFrame(() => {
+      document.getElementById('act-primary').classList.add('visible');
+    });
+  }
+
+  // ── Render Discord card handle ──
+  function renderDcHandle(sp, others) {
+    const total = (sp ? 1 : 0) + others.length;
+    if (total === 0) {
+      dcHandle.textContent = 'tap for activity';
+    } else if (total === 1) {
+      dcHandle.textContent = sp ? 'listening now' : 'playing now';
+    } else {
+      dcHandle.textContent = total + ' activities';
+    }
+  }
+
   function renderAll(data) {
     if (spTimer){ clearInterval(spTimer); spTimer=null; }
-    const status=data.discord_status||'offline';
+    const status = data.discord_status || 'offline';
     setStatus(status);
-    const acts=data.activities||[];
-    const sp=data.spotify;
-    const custom=acts.find(a=>a.type===4);
-    const others=acts.filter(a=>a.type!==4&&a.type!==2);
+    const acts   = data.activities || [];
+    const sp     = data.spotify;
+    const custom = acts.find(a => a.type === 4);
+    const others = acts.filter(a => a.type !== 4 && a.type !== 2);
 
-    if (sp) {
-      actDot.className='act-dot spotify';
-      actText.textContent=sp.song+' — '+sp.artist;
-      dcHandle.textContent='listening now';
-    } else if (others.length) {
-      actDot.className='act-dot playing';
-      actText.textContent=others[0].name+(others[0].details?' · '+others[0].details:'');
-      dcHandle.textContent='playing now';
-    } else if (status==='offline') {
-      actDot.className='act-dot';
-      actText.textContent='not around right now';
-      dcHandle.textContent='offline';
-    } else {
-      actDot.className='act-dot'+(status==='dnd'?' dnd-d':'');
-      actText.textContent='discord · '+(status==='dnd'?'do not disturb':status);
-      dcHandle.textContent='tap for activity';
+    renderHeroActivities(sp, others, status);
+    renderDcHandle(sp, others);
+
+    // ── Dropdown ──
+    let html = '';
+
+    if (custom && custom.state) {
+      const em = custom.emoji
+        ? (custom.emoji.id
+          ? `<img src="https://cdn.discordapp.com/emojis/${custom.emoji.id}.webp?size=20" style="width:14px;height:14px;vertical-align:middle;" alt="">`
+          : custom.emoji.name)
+        : '';
+      html += `<div class="dcd-custom"><span>${em}</span><span>${esc(custom.state)}</span></div>`;
     }
 
-    let html='';
-    if (custom&&custom.state) {
-      const em=custom.emoji?(custom.emoji.id?`<img src="https://cdn.discordapp.com/emojis/${custom.emoji.id}.webp?size=20" style="width:14px;height:14px;vertical-align:middle;" alt="">`:custom.emoji.name):'';
-      html+=`<div class="dcd-custom"><span>${em}</span><span>${esc(custom.state)}</span></div>`;
-    }
+    // Spotify section
     if (sp) {
-      const pct=(sp.timestamps.start&&sp.timestamps.end)?Math.min(100,((Date.now()-sp.timestamps.start)/(sp.timestamps.end-sp.timestamps.start))*100):0;
-      html+=`<div class="dcd-track">
+      if (html) html += '<div class="dcd-divider"></div>';
+      html += `<div class="dcd-section-header">spotify</div>`;
+      const pct = (sp.timestamps.start && sp.timestamps.end)
+        ? Math.min(100, ((Date.now() - sp.timestamps.start) / (sp.timestamps.end - sp.timestamps.start)) * 100)
+        : 0;
+      html += `<div class="dcd-track">
         <img class="dcd-art" src="${esc(sp.album_art_url||'')}" alt="" onerror="this.style.display='none'">
         <div class="dcd-info">
           <div class="dcd-song">${esc(sp.song)}</div>
@@ -627,28 +738,47 @@
         </div>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
       </div>`;
-      if (sp.timestamps.start&&sp.timestamps.end) {
-        const tot=sp.timestamps.end-sp.timestamps.start;
-        spTimer=setInterval(()=>{ const b=document.getElementById('dcd-sp-bar'); if(!b){clearInterval(spTimer);return;} b.style.width=Math.min(100,((Date.now()-sp.timestamps.start)/tot)*100)+'%'; },1000);
+      if (sp.timestamps.start && sp.timestamps.end) {
+        const tot = sp.timestamps.end - sp.timestamps.start;
+        spTimer = setInterval(() => {
+          const b = document.getElementById('dcd-sp-bar');
+          if (!b){ clearInterval(spTimer); return; }
+          b.style.width = Math.min(100, ((Date.now() - sp.timestamps.start) / tot) * 100) + '%';
+        }, 1000);
       }
     }
-    others.forEach(act => {
-      if (!act.name) return;
-      if (html) html+='<div class="dcd-divider"></div>';
-      const li2=act.assets?.large_image?(act.assets.large_image.startsWith('mp:external/')?'https://media.discordapp.net/external/'+act.assets.large_image.slice(12):`https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.webp`):'';
-      const el=act.timestamps?.start?Date.now()-act.timestamps.start:null;
-      html+=`<div class="dcd-act">
-        ${li2?`<img class="dcd-act-img" src="${esc(li2)}" alt="" onerror="this.style.display='none'">`:' <div class="dcd-act-img"></div>'}
-        <div style="flex:1;min-width:0;">
-          <div class="dcd-act-name">${esc(act.name)}</div>
-          ${act.details?`<div class="dcd-act-detail">${esc(act.details)}</div>`:''}
-          ${act.state?`<div class="dcd-act-state">${esc(act.state)}</div>`:''}
-          ${el!==null?`<div class="dcd-act-elapsed">▶ ${fmtT(el)} elapsed</div>`:''}
-        </div>
-      </div>`;
-    });
-    if (!html) html='<p style="font-size:.64rem;color:var(--muted);text-align:center;padding:6px 0;">no activity right now</p>';
-    dcdContent.innerHTML=html;
+
+    // All game/app activities — each gets its own section header
+    if (others.length > 0) {
+      if (html) html += '<div class="dcd-divider"></div>';
+      if (others.length > 1) {
+        html += `<div class="dcd-section-header">${others.length} activities</div>`;
+      } else {
+        html += `<div class="dcd-section-header">activity</div>`;
+      }
+      others.forEach((act, idx) => {
+        if (!act.name) return;
+        if (idx > 0) html += '<div class="dcd-divider"></div>';
+        const li2 = act.assets?.large_image
+          ? (act.assets.large_image.startsWith('mp:external/')
+            ? 'https://media.discordapp.net/external/' + act.assets.large_image.slice(12)
+            : `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.webp`)
+          : '';
+        const el = act.timestamps?.start ? Date.now() - act.timestamps.start : null;
+        html += `<div class="dcd-act">
+          ${li2 ? `<img class="dcd-act-img" src="${esc(li2)}" alt="" onerror="this.style.display='none'">` : '<div class="dcd-act-img"></div>'}
+          <div style="flex:1;min-width:0;">
+            <div class="dcd-act-name">${esc(act.name)}</div>
+            ${act.details ? `<div class="dcd-act-detail">${esc(act.details)}</div>` : ''}
+            ${act.state   ? `<div class="dcd-act-state">${esc(act.state)}</div>`   : ''}
+            ${el !== null ? `<div class="dcd-act-elapsed">▶ ${fmtT(el)} elapsed</div>` : ''}
+          </div>
+        </div>`;
+      });
+    }
+
+    if (!html) html = '<p style="font-size:.64rem;color:var(--muted);text-align:center;padding:6px 0;">no activity right now</p>';
+    dcdContent.innerHTML = html;
   }
 
   const dcToggle = document.getElementById('dc-toggle-card');
@@ -656,26 +786,26 @@
   dcToggle.addEventListener('click', e => { e.stopPropagation(); dcDrop.classList.toggle('open'); });
   document.addEventListener('click', () => dcDrop.classList.remove('open'));
 
-  const DISCORD_ID='657910178577907713';
+  const DISCORD_ID = '657910178577907713';
   function fetchL(){
     fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
-      .then(r=>r.json())
-      .then(j=>{ if(j.success) renderAll(j.data); else { setStatus('offline'); actText.textContent='could not load'; }})
-      .catch(()=>{ setStatus('offline'); actText.textContent='could not load'; });
+      .then(r => r.json())
+      .then(j => { if (j.success) renderAll(j.data); else { setStatus('offline'); actText.textContent='could not load'; }})
+      .catch(() => { setStatus('offline'); actText.textContent='could not load'; });
   }
   fetchL();
-  setInterval(fetchL,30000);
+  setInterval(fetchL, 30000);
 
   (function wsConnect(){
-    const ws=new WebSocket('wss://api.lanyard.rest/socket');
-    ws.onopen=()=>ws.send(JSON.stringify({op:2,d:{subscribe_to_id:DISCORD_ID}}));
-    ws.onmessage=e=>{
-      const m=JSON.parse(e.data);
-      if(m.op===1) setInterval(()=>ws.readyState===1&&ws.send(JSON.stringify({op:3})),m.d.heartbeat_interval);
-      if(m.op===0&&m.t==='INIT_STATE')    renderAll(m.d);
-      if(m.op===0&&m.t==='PRESENCE_UPDATE') renderAll(m.d);
+    const ws = new WebSocket('wss://api.lanyard.rest/socket');
+    ws.onopen = () => ws.send(JSON.stringify({op:2, d:{subscribe_to_id: DISCORD_ID}}));
+    ws.onmessage = e => {
+      const m = JSON.parse(e.data);
+      if (m.op === 1) setInterval(() => ws.readyState === 1 && ws.send(JSON.stringify({op:3})), m.d.heartbeat_interval);
+      if (m.op === 0 && m.t === 'INIT_STATE')      renderAll(m.d);
+      if (m.op === 0 && m.t === 'PRESENCE_UPDATE') renderAll(m.d);
     };
-    ws.onclose=()=>setTimeout(wsConnect,5000);
+    ws.onclose = () => setTimeout(wsConnect, 5000);
   })();
 
 })();
