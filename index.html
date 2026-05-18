@@ -5,540 +5,617 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Laksh &lt;3</title>
 <link rel="icon" type="image/jpeg" href="yumaki_match_pfp_2_2.jpg">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --gold: #c9a84c;
-    --gold-light: #e8c96f;
-    --cream: #f5ede0;
-    --dark: #0a0806;
-    --text: #f0e6d3;
+    --cyan: #c084fc;
+    --pink: #a855f7;
+    --bg: #08060f;
+    --text: #f5f0ff;
+    --muted: rgba(245,240,255,0.45);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    min-height: 100vh;
-    font-family: 'DM Mono', monospace;
-    background: var(--dark);
+    height: 100vh; width: 100vw; overflow: hidden;
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--bg);
     color: var(--text);
-    overflow-x: hidden;
   }
 
   @media (pointer: fine) {
     body { cursor: none; }
-    .cursor {
-      position: fixed; width: 10px; height: 10px;
-      background: var(--gold); border-radius: 50%;
+    #cur {
+      position: fixed; width: 7px; height: 7px;
+      background: var(--cyan); border-radius: 50%;
       pointer-events: none; z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width 0.2s, height 0.2s;
-      mix-blend-mode: difference;
+      transform: translate(-50%,-50%);
+      box-shadow: 0 0 8px var(--cyan), 0 0 16px rgba(0,245,255,0.4);
     }
-    .cursor-ring {
-      position: fixed; width: 36px; height: 36px;
-      border: 1px solid var(--gold-light); border-radius: 50%;
+    #cur-r {
+      position: fixed; width: 28px; height: 28px;
+      border: 1px solid rgba(0,245,255,0.45); border-radius: 50%;
       pointer-events: none; z-index: 9998;
-      transform: translate(-50%, -50%);
-      transition: width 0.25s, height 0.25s, opacity 0.3s;
-      opacity: 0.5;
+      transform: translate(-50%,-50%);
+      transition: width .22s, height .22s, opacity .25s;
+      opacity: .55;
     }
-    .cursor.hover      { width: 20px; height: 20px; }
-    .cursor-ring.hover { width: 60px; height: 60px; opacity: 0.2; }
+    #cur.h { width: 14px; height: 14px; }
+    #cur-r.h { width: 48px; height: 48px; opacity: .2; }
   }
-  @media (pointer: coarse) {
-    .cursor, .cursor-ring { display: none !important; }
-  }
+  @media (pointer: coarse) { #cur, #cur-r { display: none !important; } }
 
   #bg-video {
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%; object-fit: cover;
-    z-index: 0; opacity: 0.35;
-    filter: saturate(0.6) brightness(0.5);
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; z-index: 0; opacity: .12;
+    filter: saturate(.3) brightness(.4) hue-rotate(260deg);
   }
 
-  .grain {
-    position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    opacity: 0.5; mix-blend-mode: overlay;
+  .bg-glow {
+    position: fixed; border-radius: 50%; pointer-events: none; z-index: 1;
   }
-  .vignette {
-    position: fixed; inset: 0; z-index: 2; pointer-events: none;
-    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
+  .bg-glow-a {
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(168,85,247,.15) 0%, transparent 65%);
+    top: 50%; left: 50%; transform: translate(-50%,-60%);
+    animation: breatheA 6s ease-in-out infinite alternate;
+  }
+  .bg-glow-b {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(192,132,252,.07) 0%, transparent 70%);
+    bottom: 0; left: 10%;
+    animation: breatheB 8s ease-in-out 2s infinite alternate;
+  }
+  @keyframes breatheA { to { transform: translate(-50%,-55%) scale(1.12); } }
+  @keyframes breatheB { to { transform: translateY(-30px) scale(1.1); } }
+
+  .stars { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+  .star {
+    position: absolute; opacity: 0;
+    animation: twinkle var(--d,3s) var(--del,0s) ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    0%   { opacity: 0; transform: scale(.5) rotate(0deg); }
+    50%  { opacity: var(--op,.6); }
+    100% { opacity: .1; transform: scale(1.2) rotate(20deg); }
   }
 
   #enter-overlay {
-    position: fixed; inset: 0; z-index: 1000; background: #000;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 20px; transition: opacity 0.9s ease;
+    position: fixed; inset: 0; z-index: 1000;
+    background: #030208;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+    transition: opacity .9s ease;
+  }
+  #enter-overlay::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(168,85,247,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(168,85,247,.05) 1px, transparent 1px);
+    background-size: 70px 70px;
   }
   #enter-overlay.fade-out { opacity: 0; pointer-events: none; }
-  #enter-overlay.hidden   { display: none; }
+  #enter-overlay.gone     { display: none; }
 
   #enter-btn {
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
-    background: none; border: none; cursor: pointer; padding: 0;
-    -webkit-tap-highlight-color: transparent; transition: transform 0.3s ease;
+    position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px;
+    background: none; border: none; cursor: pointer; padding: 36px 52px;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .3s ease; z-index: 1;
   }
-  #enter-btn:hover  { transform: scale(1.04); }
-  #enter-btn:active { transform: scale(0.97); }
+  #enter-btn::before {
+    content: ''; position: absolute; inset: 0; border-radius: 12px;
+    border: 1px solid rgba(168,85,247,.2);
+    background: rgba(168,85,247,.04);
+    transition: border-color .3s, background .3s;
+  }
+  #enter-btn:hover::before { border-color: rgba(168,85,247,.4); background: rgba(168,85,247,.08); }
+  #enter-btn:hover { transform: scale(1.03); }
+  #enter-btn:active { transform: scale(.97); }
 
-  .enter-avatar {
-    width: 72px; height: 72px; border-radius: 50%; overflow: hidden;
-    background: #1a1208; box-shadow: 0 0 0 2px var(--gold);
+  .e-avatar {
+    width: 80px; height: 80px; border-radius: 50%; overflow: hidden;
+    box-shadow: 0 0 0 1.5px var(--pink), 0 0 24px rgba(168,85,247,.4);
   }
-  .enter-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-  .enter-name {
-    font-family: 'Playfair Display', serif; font-size: 1.2rem;
-    font-weight: 700; color: #fff; letter-spacing: 0.02em;
+  .e-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .e-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; color: #fff; letter-spacing: .12em;
   }
-  .enter-cta {
-    padding: 9px 28px; background: var(--gold); color: #0a0806;
-    border-radius: 100px; font-family: 'DM Mono', monospace;
-    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
-    transition: background 0.2s; display: block;
+  .e-cta {
+    padding: 9px 34px; background: transparent;
+    color: var(--pink); border: 1px solid var(--pink);
+    border-radius: 2px; font-family: 'IBM Plex Mono', monospace;
+    font-size: .65rem; letter-spacing: .18em; text-transform: uppercase;
+    position: relative; overflow: hidden;
+    transition: color .25s; display: block;
   }
-  #enter-btn:hover .enter-cta { background: var(--gold-light); }
-
-  .enter-dots { display: flex; gap: 5px; }
-  .enter-dots span {
-    width: 4px; height: 4px; border-radius: 50%; background: var(--gold);
+  .e-cta::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--pink); transform: translateX(-100%);
+    transition: transform .28s ease; z-index: -1;
+  }
+  #enter-btn:hover .e-cta { color: #07050d; }
+  #enter-btn:hover .e-cta::after { transform: translateX(0); }
+  .e-dots { display: flex; gap: 5px; }
+  .e-dots span {
+    width: 4px; height: 4px; border-radius: 50%; background: var(--pink);
     animation: blink 1.4s ease-in-out infinite;
   }
-  .enter-dots span:nth-child(2) { animation-delay: 0.2s; }
-  .enter-dots span:nth-child(3) { animation-delay: 0.4s; }
-
+  .e-dots span:nth-child(2) { animation-delay: .2s; }
+  .e-dots span:nth-child(3) { animation-delay: .4s; }
   @keyframes blink {
-    0%, 100% { opacity: 0.2; transform: scale(0.8); }
-    50%       { opacity: 1;   transform: scale(1.2); }
+    0%,100% { opacity: .15; transform: scale(.7); }
+    50% { opacity: 1; transform: scale(1); box-shadow: 0 0 5px var(--pink); }
   }
 
   #main {
-    position: relative; z-index: 10; min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 60px 24px;
-    padding-bottom: max(60px, env(safe-area-inset-bottom, 60px));
-    opacity: 0; transition: opacity 1s ease 0.3s;
+    position: relative; z-index: 10;
+    height: 100vh; width: 100vw;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: space-between;
+    overflow: hidden;
+    opacity: 0; transition: opacity 1s ease .3s;
   }
   #main.visible { opacity: 1; }
 
-  .card {
-    width: 100%; max-width: 420px;
-    display: flex; flex-direction: column; align-items: center; gap: 28px;
+  .top-bar {
+    width: 100%; display: flex; justify-content: center; align-items: center;
+    padding: 28px 24px 0; flex-shrink: 0;
+  }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(255,255,255,.03);
+    border-radius: 100px; padding: 7px 18px;
+    font-size: .6rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); backdrop-filter: blur(8px);
+    transition: border-color .4s, color .4s;
+  }
+  .status-pill .s-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #747f8d;
+    flex-shrink: 0; transition: background .4s;
+  }
+  .status-pill.online { border-color: rgba(59,165,92,.3); color: rgba(59,165,92,.9); }
+  .status-pill.online .s-dot { background: #3ba55c; box-shadow: 0 0 6px rgba(59,165,92,.8); }
+  .status-pill.idle   { border-color: rgba(250,168,26,.3); color: rgba(250,168,26,.9); }
+  .status-pill.idle   .s-dot { background: #faa81a; box-shadow: 0 0 6px rgba(250,168,26,.8); }
+  .status-pill.dnd    { border-color: rgba(237,66,69,.35); color: rgba(237,66,69,.9); }
+  .status-pill.dnd    .s-dot { background: #ed4245; box-shadow: 0 0 6px rgba(237,66,69,.8); }
+
+  .hero {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 0 20px; gap: 0;
   }
 
-  .avatar-wrap { position: relative; width: 96px; height: 96px; }
-  .avatar-wrap img {
-    width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;
-    box-shadow: 0 0 0 2px var(--gold), 0 0 24px rgba(201,168,76,0.25);
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 18vw, 14rem);
+    line-height: .92; color: var(--pink);
+    letter-spacing: .02em;
+    text-shadow: 0 0 60px rgba(168,85,247,.25), 0 0 120px rgba(168,85,247,.1);
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .8s cubic-bezier(.22,1,.36,1) .5s, transform .8s cubic-bezier(.22,1,.36,1) .5s;
+    user-select: none;
   }
-  .avatar-status {
-    position: absolute; bottom: 4px; right: 4px;
-    width: 14px; height: 14px; border-radius: 50%;
-    border: 2px solid var(--dark); background: #747f8d; transition: background 0.4s;
-  }
-  .avatar-status.online { background: #3ba55c; }
-  .avatar-status.idle   { background: #faa81a; }
-  .avatar-status.dnd    { background: #ed4245; }
+  #main.visible .hero-name { opacity: 1; transform: translateY(0); }
 
-  .name {
-    font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700;
-    letter-spacing: 0.01em; text-align: center; color: #fff;
-    display: flex; align-items: baseline; gap: 0.1em; flex-wrap: wrap; justify-content: center;
+  .hero-tagline {
+    font-size: clamp(.68rem, 1.4vw, .88rem);
+    color: var(--muted); font-style: italic;
+    letter-spacing: .05em; margin-top: 20px; min-height: 1.4em;
   }
-  .name .letter {
-    display: inline-block; opacity: 0; transform: translateY(18px);
-    animation: letterIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
-    animation-play-state: paused;
+  .cursor-blink {
+    display: inline-block; width: 2px; height: 1em;
+    background: var(--pink); margin-left: 2px; vertical-align: middle;
+    animation: cblink .9s step-end infinite;
   }
-  .name .heart {
-    color: var(--gold); display: inline-block; opacity: 0; transform: scale(0.4);
-    animation: heartPop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
-    animation-play-state: paused;
-  }
-  #main.visible .name .letter,
-  #main.visible .name .heart { animation-play-state: running; }
-  @keyframes letterIn { to { opacity: 1; transform: translateY(0); } }
-  @keyframes heartPop { to { opacity: 1; transform: scale(1); } }
+  @keyframes cblink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-  .bio {
-    font-size: 0.78rem; line-height: 1.8; text-align: center;
-    color: rgba(240,230,211,0.65); letter-spacing: 0.03em; max-width: 320px;
+  .activity-divider {
+    width: 44px; height: 1px; margin: 16px 0;
+    background: linear-gradient(90deg, transparent, rgba(192,132,252,.55), transparent);
   }
 
-  #discord-card {
-    width: 100%; border: 1px solid rgba(201,168,76,0.18); border-radius: 12px;
-    background: rgba(10,8,6,0.6); backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px); overflow: hidden; transition: border-color 0.3s;
+  .hero-activity {
+    display: flex; align-items: center; gap: 10px;
+    font-size: .68rem; color: var(--muted); letter-spacing: .06em; min-height: 22px;
   }
-  #discord-card:hover { border-color: rgba(201,168,76,0.38); }
-
-  .dc-header {
-    display: flex; align-items: center; gap: 8px; padding: 12px 16px 10px;
-    border-bottom: 1px solid rgba(201,168,76,0.08);
+  .act-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--muted);
+    flex-shrink: 0; transition: background .4s;
   }
-  .dc-header svg { opacity: 0.5; flex-shrink: 0; }
-  .dc-label { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(240,230,211,0.4); }
-  .dc-status-pill {
-    margin-left: auto; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 3px 10px; border-radius: 100px; background: rgba(255,255,255,0.04);
-    color: rgba(240,230,211,0.5); display: flex; align-items: center; gap: 5px; transition: color 0.4s;
-  }
-  .dc-status-pill .dot {
-    width: 5px; height: 5px; border-radius: 50%; background: #747f8d;
-    transition: background 0.4s; flex-shrink: 0;
-  }
-  .dc-status-pill.online .dot { background: #3ba55c; }
-  .dc-status-pill.online      { color: rgba(59,165,92,0.9); }
-  .dc-status-pill.idle   .dot { background: #faa81a; }
-  .dc-status-pill.idle        { color: rgba(250,168,26,0.9); }
-  .dc-status-pill.dnd    .dot { background: #ed4245; }
-  .dc-status-pill.dnd         { color: rgba(237,66,69,0.9); }
+  .act-dot.playing { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+  .act-dot.spotify { background: #1DB954; box-shadow: 0 0 8px rgba(29,185,84,.8); }
+  .act-dot.dnd-d   { background: #ed4245; box-shadow: 0 0 6px rgba(237,66,69,.8); }
 
-  .dc-body { padding: 14px 16px; min-height: 64px; display: flex; flex-direction: column; gap: 10px; }
-  .dc-empty { font-size: 0.72rem; color: rgba(240,230,211,0.3); letter-spacing: 0.05em; text-align: center; padding: 8px 0; }
-
-  .dc-spotify { display: flex; align-items: center; gap: 12px; }
-  .dc-spotify-art { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-  .dc-spotify-info { flex: 1; min-width: 0; }
-  .dc-spotify-track { font-size: 0.78rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dc-spotify-artist { font-size: 0.66rem; color: rgba(240,230,211,0.5); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dc-spotify-progress { margin-top: 8px; width: 100%; height: 2px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
-  .dc-spotify-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 2px; transition: width 1s linear; }
-
-  .dc-activity { display: flex; align-items: center; gap: 12px; }
-  .dc-activity-img-wrap { position: relative; width: 48px; height: 48px; flex-shrink: 0; }
-  .dc-activity-img { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; background: rgba(255,255,255,0.05); }
-  .dc-activity-img-small { position: absolute; bottom: -4px; right: -4px; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--dark); object-fit: cover; }
-  .dc-activity-info { flex: 1; min-width: 0; }
-  .dc-activity-name { font-size: 0.72rem; color: rgba(240,230,211,0.5); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2px; }
-  .dc-activity-title { font-size: 0.78rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dc-activity-detail { font-size: 0.66rem; color: rgba(240,230,211,0.45); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dc-activity-elapsed { font-size: 0.62rem; color: var(--gold); margin-top: 4px; letter-spacing: 0.04em; }
-
-  .dc-custom-status { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: rgba(201,168,76,0.05); border-radius: 8px; border: 1px solid rgba(201,168,76,0.1); }
-  .dc-custom-emoji { font-size: 0.9rem; line-height: 1; }
-  .dc-custom-text { font-size: 0.72rem; color: rgba(240,230,211,0.6); letter-spacing: 0.03em; font-style: italic; }
-  .dc-divider { height: 1px; background: rgba(201,168,76,0.08); margin: 2px 0; }
-
-  @keyframes shimmer {
-    0%   { background-position: -400px 0; }
-    100% { background-position:  400px 0; }
-  }
-  .dc-loading {
-    height: 48px; border-radius: 8px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 75%);
-    background-size: 800px 100%; animation: shimmer 1.6s infinite;
+  .bottom-links {
+    width: 100%; flex-shrink: 0;
+    padding: 0 20px max(20px, env(safe-area-inset-bottom, 20px));
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
   }
 
-  @keyframes pulse-ring {
-    0%  { box-shadow: 0 0 0 0   rgba(201,168,76,0.4); }
-    70% { box-shadow: 0 0 0 6px rgba(201,168,76,0); }
-    100%{ box-shadow: 0 0 0 0   rgba(201,168,76,0); }
+  .links-row {
+    display: flex; gap: 8px; width: 100%; max-width: 900px;
+    overflow-x: auto; justify-content: center;
+    scrollbar-width: none; -ms-overflow-style: none; padding: 2px 0;
   }
-  .dc-live-dot {
-    display: inline-block; width: 5px; height: 5px; border-radius: 50%;
-    background: var(--gold); margin-right: 5px; animation: pulse-ring 2s infinite;
-  }
+  .links-row::-webkit-scrollbar { display: none; }
 
-  .links { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-  .link-btn {
-    display: flex; align-items: center; gap: 12px; padding: 13px 18px;
-    border-radius: 100px; border: 1px solid rgba(201,168,76,0.2);
-    background: rgba(201,168,76,0.04); color: rgba(240,230,211,0.8);
-    font-family: 'DM Mono', monospace; text-decoration: none;
-    transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s;
-    -webkit-tap-highlight-color: transparent; cursor: pointer; min-height: 48px;
+  .link-card {
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: 5px; padding: 14px 16px; border-radius: 10px;
+    min-width: 110px; flex: 1; max-width: 140px;
+    border: 1px solid rgba(255,255,255,.07);
+    background: rgba(255,255,255,.025);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    text-decoration: none;
+    transition: border-color .2s, background .2s, transform .15s, box-shadow .2s;
+    -webkit-tap-highlight-color: transparent;
+    position: relative; overflow: hidden;
+  }
+  .link-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(192,132,252,.5), transparent);
+    transform: scaleX(0); transition: transform .28s ease;
   }
   @media (pointer: fine) {
-    .link-btn { cursor: none; }
-    .link-btn:hover { border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.09); color: var(--gold-light); transform: translateX(3px); }
+    .link-card { cursor: none; }
+    .link-card:hover {
+      border-color: rgba(168,85,247,.3); background: rgba(168,85,247,.06);
+      transform: translateY(-4px); box-shadow: 0 10px 28px rgba(168,85,247,.09);
+    }
+    .link-card:hover::before { transform: scaleX(1); }
+    .link-card:hover .lc-name { color: var(--pink); }
   }
   @media (pointer: coarse) {
-    .link-btn:active { border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.09); color: var(--gold-light); transform: scale(0.98); }
+    .link-card:active { background: rgba(168,85,247,.08); transform: scale(.97); }
   }
-  .link-btn .link-icon { font-size: 1rem; flex-shrink: 0; line-height: 1; }
-  .link-title { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(240,230,211,0.9); flex: 1; }
-  .link-arrow { font-size: 0.8rem; color: rgba(201,168,76,0.4); transition: color 0.2s, transform 0.2s; flex-shrink: 0; line-height: 1; }
-  @media (pointer: fine) {
-    .link-btn:hover .link-arrow { color: var(--gold); transform: translateX(3px); }
-    .link-btn:hover .link-title { color: var(--gold-light); }
+  .lc-icon { font-size: 1rem; line-height: 1; }
+  .lc-name {
+    font-size: .65rem; letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(240,234,248,.85); transition: color .2s;
+  }
+  .lc-handle { font-size: .56rem; letter-spacing: .03em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+  .dc-card-wrap { position: relative; min-width: 110px; flex: 1; max-width: 140px; }
+  .dc-dropdown {
+    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    width: 290px; max-width: calc(100vw - 32px);
+    border: 1px solid rgba(192,132,252,.18);
+    border-radius: 10px;
+    background: rgba(7,5,13,.94);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    padding: 12px; gap: 8px; z-index: 100;
+    box-shadow: 0 -8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(192,132,252,.07);
+    display: none; flex-direction: column;
+  }
+  .dc-dropdown::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: .35; border-radius: 10px 10px 0 0;
+  }
+  .dc-dropdown.open { display: flex; }
+
+  .dcd-track { display: flex; align-items: center; gap: 10px; }
+  .dcd-art { width: 42px; height: 42px; border-radius: 4px; object-fit: cover; flex-shrink: 0; }
+  .dcd-info { flex: 1; min-width: 0; }
+  .dcd-song { font-size: .7rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dcd-artist { font-size: .6rem; color: var(--muted); margin-top: 2px; }
+  .dcd-bar-wrap { height: 2px; background: rgba(255,255,255,.08); border-radius: 1px; overflow: hidden; margin-top: 6px; }
+  .dcd-bar { height: 100%; background: #1DB954; border-radius: 1px; transition: width 1s linear; }
+  .dcd-act { display: flex; align-items: center; gap: 10px; }
+  .dcd-act-img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; background: rgba(255,255,255,.04); flex-shrink: 0; }
+  .dcd-act-name { font-size: .58rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+  .dcd-act-detail { font-size: .68rem; color: var(--text); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dcd-act-state { font-size: .6rem; color: var(--muted); margin-top: 1px; }
+  .dcd-act-elapsed { font-size: .58rem; color: var(--cyan); margin-top: 3px; }
+  .dcd-custom { display: flex; align-items: center; gap: 7px; font-size: .66rem; color: rgba(240,234,248,.5); font-style: italic; }
+  .dcd-divider { height: 1px; background: rgba(192,132,252,.08); }
+
+  @keyframes shimmer { 0%{background-position:-300px 0} 100%{background-position:300px 0} }
+  .dcd-loading {
+    height: 40px; border-radius: 4px;
+    background: linear-gradient(90deg, rgba(192,132,252,.02) 25%, rgba(192,132,252,.07) 50%, rgba(192,132,252,.02) 75%);
+    background-size: 600px 100%; animation: shimmer 1.5s infinite;
   }
 
-  .footer-line { font-size: 0.6rem; letter-spacing: 0.1em; color: rgba(240,230,211,0.2); text-transform: uppercase; text-align: center; margin-top: 12px; }
-
-  @media (max-width: 480px) {
-    #main { padding: 48px 16px; justify-content: flex-start; }
-    .card { gap: 20px; }
-    .avatar-wrap { width: 82px; height: 82px; }
-    .name { font-size: 1.55rem; }
-    .bio { font-size: 0.72rem; max-width: 280px; }
-    #discord-card { border-radius: 10px; }
-    .dc-header { padding: 10px 14px 8px; }
-    .dc-body { padding: 12px 14px; }
-    .dc-spotify-art { width: 42px; height: 42px; }
-    .dc-activity-img, .dc-activity-img-wrap { width: 42px; height: 42px; }
-    .link-btn { padding: 12px 16px; }
-    .enter-name { font-size: 1.05rem; }
-    .enter-cta  { font-size: 0.68rem; padding: 8px 24px; }
+  .footer-txt {
+    font-size: .5rem; letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(240,234,248,.14); text-align: center;
   }
-  @media (max-height: 700px) {
-    #main { justify-content: flex-start; padding-top: 40px; }
+
+  @media (max-width: 600px) {
+    .hero-name { font-size: clamp(4rem, 22vw, 8rem); }
+    .links-row { justify-content: flex-start; padding: 2px 2px; }
+    .link-card, .dc-card-wrap { min-width: 96px; max-width: 120px; padding: 11px 12px; }
+    .lc-name { font-size: .6rem; }
+    .lc-handle { font-size: .52rem; }
+    .hero-tagline { font-size: .65rem; }
+  }
+  @media (max-height: 680px) {
+    .top-bar { padding-top: 14px; }
+    .hero-name { font-size: clamp(3.5rem, 14vw, 7rem); }
+    .bottom-links { padding-bottom: 14px; }
+    .activity-divider { margin: 10px 0; }
   }
 </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursor-ring"></div>
+<div id="cur"></div>
+<div id="cur-r"></div>
+<video id="bg-video" loop playsinline muted src="bg.mp4"></video>
+<div class="bg-glow bg-glow-a"></div>
+<div class="bg-glow bg-glow-b"></div>
+<div class="stars" id="stars"></div>
 
-<video id="bg-video" loop playsinline src="bg.mp4"></video>
-<div class="grain"></div>
-<div class="vignette"></div>
-
-<!-- Enter overlay -->
 <div id="enter-overlay">
-  <button id="enter-btn" aria-label="Enter Laksh's page">
-    <div class="enter-avatar">
-      <img src="yumaki_match_pfp_2_2.jpg" alt="Laksh avatar"/>
-    </div>
-    <span class="enter-name">Laksh</span>
-    <span class="enter-cta">enter</span>
-    <div class="enter-dots">
-      <span></span><span></span><span></span>
-    </div>
+  <button id="enter-btn" aria-label="Enter">
+    <div class="e-avatar"><img src="yumaki_match_pfp_2_2.jpg" alt="Laksh"/></div>
+    <span class="e-name">Laksh</span>
+    <span class="e-cta">enter</span>
+    <div class="e-dots"><span></span><span></span><span></span></div>
   </button>
 </div>
 
-<!-- Main content -->
 <main id="main">
-  <div class="card">
 
-    <div class="avatar-wrap">
-      <img src="yumaki_match_pfp_2_2.jpg" alt="Laksh"/>
-      <div class="avatar-status" id="status-dot"></div>
+  <div class="top-bar">
+    <div class="status-pill" id="status-pill">
+      <span class="s-dot"></span>
+      <span id="status-label">discord</span>
     </div>
+  </div>
 
-    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
-      <h1 class="name">
-        <span class="letter" style="animation-delay:0.05s">L</span><span
-          class="letter" style="animation-delay:0.12s">a</span><span
-          class="letter" style="animation-delay:0.19s">k</span><span
-          class="letter" style="animation-delay:0.26s">s</span><span
-          class="letter" style="animation-delay:0.33s">h</span>&nbsp;<span
-          class="heart" style="animation-delay:0.5s">&lt;3</span>
-      </h1>
-      <p class="bio">18 · Game Developer · Content Creator · Discord Moderation · Gamer</p>
+  <div class="hero">
+    <h1 class="hero-name">laksh &lt;3</h1>
+    <p class="hero-tagline" id="tagline"></p>
+    <div class="activity-divider"></div>
+    <div class="hero-activity">
+      <span class="act-dot" id="act-dot"></span>
+      <span id="act-text">loading activity</span>
     </div>
+  </div>
 
-    <div id="discord-card">
-      <div class="dc-header">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--gold)">
-          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.1.246.198.373.292a.077.077 0 0 1-.006.127c-.598.35-1.22.645-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
-        </svg>
-        <span class="dc-label">discord activity</span>
-        <div class="dc-status-pill" id="status-pill">
-          <span class="dot"></span>
-          <span id="status-text">loading</span>
+  <div class="bottom-links">
+    <div class="links-row">
+      <a href="https://www.youtube.com/channel/UCYmXwWSLJvguHhP-nFo69Jg" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">▶</span>
+        <span class="lc-name">YouTube</span>
+        <span class="lc-handle">lakshxplayz</span>
+      </a>
+      <a href="https://www.twitch.tv/lakshxplayz" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">🎮</span>
+        <span class="lc-name">Twitch</span>
+        <span class="lc-handle">lakshxplayz</span>
+      </a>
+      <a href="https://www.instagram.com/lakshx.jpeg" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">📸</span>
+        <span class="lc-name">Instagram</span>
+        <span class="lc-handle">lakshx.jpeg</span>
+      </a>
+      <div class="dc-card-wrap">
+        <div class="link-card" id="dc-toggle-card">
+          <span class="lc-icon">
+            <svg width="15" height="11" viewBox="0 0 24 18" fill="rgba(240,234,248,0.75)">
+              <path d="M20.317 1.492a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 .677 1.492a.07.07 0 0 0-.032.027C-2.533 6.168-3.32 10.702-2.901 15.179a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.1.246.198.373.292a.077.077 0 0 1-.006.127c-.598.35-1.22.645-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+            </svg>
+          </span>
+          <span class="lc-name">Discord</span>
+          <span class="lc-handle" id="dc-card-handle">tap for activity</span>
+        </div>
+        <div class="dc-dropdown" id="dc-dropdown">
+          <div class="dcd-loading" id="dcd-content"></div>
         </div>
       </div>
-      <div class="dc-body" id="dc-body">
-        <div class="dc-loading"></div>
-      </div>
-    </div>
-
-    <div class="links">
-      <a href="https://www.youtube.com/channel/UCYmXwWSLJvguHhP-nFo69Jg" target="_blank" rel="noopener noreferrer" class="link-btn">
-        <span class="link-icon">▶</span><span class="link-title">YouTube</span><span class="link-arrow">→</span>
+      <a href="https://steamcommunity.com/id/lakshx" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">🎮</span>
+        <span class="lc-name">Steam</span>
+        <span class="lc-handle">lakshx</span>
       </a>
-      <a href="https://www.twitch.tv/lakshxplayz" target="_blank" rel="noopener noreferrer" class="link-btn">
-        <span class="link-icon">🎮</span><span class="link-title">Twitch</span><span class="link-arrow">→</span>
+      <a href="https://www.roblox.com/users/5496495013/profile" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">🟥</span>
+        <span class="lc-name">Roblox</span>
+        <span class="lc-handle">lakshx</span>
       </a>
-      <a href="https://www.instagram.com/lakshx.jpeg" target="_blank" rel="noopener noreferrer" class="link-btn">
-        <span class="link-icon">📸</span><span class="link-title">Instagram</span><span class="link-arrow">→</span>
+      <a href="https://www.snapchat.com/@lakshx.jpeg" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">👻</span>
+        <span class="lc-name">Snapchat</span>
+        <span class="lc-handle">lakshx.jpeg</span>
       </a>
-      <a href="https://www.instagram.com/lakshx.playz" target="_blank" rel="noopener noreferrer" class="link-btn">
-        <span class="link-icon">📸</span><span class="link-title">Instagram (playz)</span><span class="link-arrow">→</span>
-      </a>
-      <a href="https://steamcommunity.com/id/lakshx" target="_blank" rel="noopener noreferrer" class="link-btn">
-        <span class="link-icon">🎮</span><span class="link-title">Steam</span><span class="link-arrow">→</span>
-      </a>
-      <a href="https://www.roblox.com/users/5496495013/profile" target="_blank" rel="noopener noreferrer" class="link-btn">
-        <span class="link-icon">🎮</span><span class="link-title">Roblox</span><span class="link-arrow">→</span>
-      </a>
-      <a href="https://www.snapchat.com/@lakshx.jpeg" target="_blank" rel="noopener noreferrer" class="link-btn">
-        <span class="link-icon">👻</span><span class="link-title">Snapchat</span><span class="link-arrow">→</span>
-      </a>
-      <a href="https://open.spotify.com/user/314rymteiostne2wjommzch2gmvm" target="_blank" rel="noopener noreferrer" class="link-btn">
-        <span class="link-icon">🎵</span><span class="link-title">Spotify</span><span class="link-arrow">→</span>
+      <a href="https://open.spotify.com/user/314rymteiostne2wjommzch2gmvm" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">🎵</span>
+        <span class="lc-name">Spotify</span>
+        <span class="lc-handle">lakshx</span>
       </a>
     </div>
-
-    <p class="footer-line">© 2025 Laksh · all rights reserved</p>
+    <p class="footer-txt">made with ♥ · laksh · 2025</p>
   </div>
+
 </main>
 
 <script>
-(function () {
+(function(){
   'use strict';
 
-  const overlay  = document.getElementById('enter-overlay');
-  const mainEl   = document.getElementById('main');
-  const enterBtn = document.getElementById('enter-btn');
+  const overlay = document.getElementById('enter-overlay');
+  const mainEl  = document.getElementById('main');
 
-  function enterSite() {
+  document.getElementById('enter-btn').addEventListener('click', () => {
     overlay.classList.add('fade-out');
     mainEl.classList.add('visible');
-    setTimeout(() => overlay.classList.add('hidden'), 1000);
-    const vid = document.getElementById('bg-video');
-    vid.play().catch(() => { vid.muted = true; vid.play(); });
-  }
-  enterBtn.addEventListener('click', enterSite);
+    setTimeout(() => overlay.classList.add('gone'), 1000);
+    const v = document.getElementById('bg-video');
+    v.play().catch(() => { v.muted = true; v.play(); });
+  });
 
-  const cursor     = document.getElementById('cursor');
-  const cursorRing = document.getElementById('cursor-ring');
-  const isFinePntr = window.matchMedia('(pointer: fine)').matches;
-
-  if (isFinePntr && cursor) {
-    let mx = -100, my = -100, rx = -100, ry = -100;
+  const cur  = document.getElementById('cur');
+  const curR = document.getElementById('cur-r');
+  if (window.matchMedia('(pointer:fine)').matches && cur) {
+    let mx=-100, my=-100, rx=-100, ry=-100;
     document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      mx=e.clientX; my=e.clientY;
+      cur.style.left=mx+'px'; cur.style.top=my+'px';
     });
-    function animRing() {
-      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-      cursorRing.style.left = rx + 'px'; cursorRing.style.top = ry + 'px';
-      requestAnimationFrame(animRing);
-    }
-    animRing();
-    document.querySelectorAll('a, button').forEach(el => {
-      el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); cursorRing.classList.add('hover'); });
-      el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); cursorRing.classList.remove('hover'); });
+    (function loop(){ rx+=(mx-rx)*.12; ry+=(my-ry)*.12; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(loop); })();
+    document.querySelectorAll('a,button,.link-card').forEach(el => {
+      el.addEventListener('mouseenter',()=>{ cur.classList.add('h'); curR.classList.add('h'); });
+      el.addEventListener('mouseleave',()=>{ cur.classList.remove('h'); curR.classList.remove('h'); });
     });
   }
 
-  const DISCORD_ID = '657910178577907713';
-  const dcBody     = document.getElementById('dc-body');
-  const statusPill = document.getElementById('status-pill');
-  const statusText = document.getElementById('status-text');
-  const statusDot  = document.getElementById('status-dot');
-  let spotifyTimer = null;
+  const starsEl = document.getElementById('stars');
+  for (let i=0; i<26; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random()*3+2;
+    const isPink = Math.random() > .45;
+    s.style.cssText = [
+      'width:'+sz+'px','height:'+sz+'px',
+      'top:'+Math.random()*100+'%','left:'+Math.random()*100+'%',
+      '--d:'+(2+Math.random()*5)+'s','--del:'+(Math.random()*6)+'s',
+      '--op:'+(0.3+Math.random()*.5),
+      'border-radius:'+(Math.random()>.5?'50%':'2px'),
+      'background:'+(isPink?'var(--pink)':'var(--cyan)')
+    ].join(';');
+    starsEl.appendChild(s);
+  }
+
+  const LINES = [
+    '18 · game developer · content creator',
+    'grinding ranked like it\'s a job',
+    'built different, coded different',
+    '18 · discord mod · gamer · creator',
+  ];
+  let li=0, ci=0, del=false;
+  const tEl = document.getElementById('tagline');
+  function type(){
+    const line=LINES[li];
+    if (!del) {
+      tEl.innerHTML=line.slice(0,ci+1)+'<span class="cursor-blink"></span>';
+      ci++;
+      if (ci>=line.length){ del=true; setTimeout(type,2000); return; }
+    } else {
+      tEl.innerHTML=line.slice(0,ci)+'<span class="cursor-blink"></span>';
+      ci--;
+      if (ci<0){ del=false; li=(li+1)%LINES.length; ci=0; setTimeout(type,380); return; }
+    }
+    setTimeout(type, del?38:60);
+  }
+  setTimeout(type,1300);
+
+  const statusPill  = document.getElementById('status-pill');
+  const statusLabel = document.getElementById('status-label');
+  const actDot      = document.getElementById('act-dot');
+  const actText     = document.getElementById('act-text');
+  const dcdContent  = document.getElementById('dcd-content');
+  const dcHandle    = document.getElementById('dc-card-handle');
+  let spTimer = null;
 
   function setStatus(s) {
-    const labels = { online:'online', idle:'idle', dnd:'do not disturb', offline:'offline' };
-    statusPill.className = 'dc-status-pill ' + s;
-    statusText.textContent = labels[s] || s;
-    statusDot.className = 'avatar-status ' + s;
+    const m={online:'online',idle:'idle',dnd:'do not disturb',offline:'offline'};
+    statusPill.className='status-pill '+(s==='dnd'?'dnd':s==='idle'?'idle':s==='online'?'online':'');
+    statusLabel.textContent='discord · '+(m[s]||s);
   }
 
-  function fmtTime(ms) {
-    const s = Math.floor(ms/1000), m = Math.floor(s/60), h = Math.floor(m/60);
-    if (h > 0) return h + 'h ' + (m%60) + 'm';
-    if (m > 0) return m + 'm ' + (s%60) + 's';
-    return s + 's';
-  }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function fmtT(ms){ const s=Math.floor(ms/1e3),m=Math.floor(s/60),h=Math.floor(m/60); return h>0?h+'h '+(m%60)+'m':m>0?m+'m '+(s%60)+'s':s+'s'; }
 
-  function escHtml(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function renderDiscord(data) {
-    if (spotifyTimer) { clearInterval(spotifyTimer); spotifyTimer = null; }
-    const status = data.discord_status || 'offline';
+  function renderAll(data) {
+    if (spTimer){ clearInterval(spTimer); spTimer=null; }
+    const status=data.discord_status||'offline';
     setStatus(status);
-    const activities = data.activities || [];
-    const spotify    = data.spotify;
-    const customSt   = activities.find(a => a.type === 4);
-    const others     = activities.filter(a => a.type !== 4 && a.type !== 2);
+    const acts=data.activities||[];
+    const sp=data.spotify;
+    const custom=acts.find(a=>a.type===4);
+    const others=acts.filter(a=>a.type!==4&&a.type!==2);
 
-    if (status === 'offline' && !spotify && !others.length && !customSt) {
-      dcBody.innerHTML = '<p class="dc-empty">not around right now</p>'; return;
+    if (sp) {
+      actDot.className='act-dot spotify';
+      actText.textContent=sp.song+' — '+sp.artist;
+      dcHandle.textContent='listening now';
+    } else if (others.length) {
+      actDot.className='act-dot playing';
+      actText.textContent=others[0].name+(others[0].details?' · '+others[0].details:'');
+      dcHandle.textContent='playing now';
+    } else if (status==='offline') {
+      actDot.className='act-dot';
+      actText.textContent='not around right now';
+      dcHandle.textContent='offline';
+    } else {
+      actDot.className='act-dot'+(status==='dnd'?' dnd-d':'');
+      actText.textContent='discord · '+(status==='dnd'?'do not disturb':status);
+      dcHandle.textContent='tap for activity';
     }
 
-    let html = '';
-
-    if (customSt && customSt.state) {
-      const emoji = customSt.emoji
-        ? (customSt.emoji.id
-            ? `<img src="https://cdn.discordapp.com/emojis/${customSt.emoji.id}.webp?size=20" style="width:16px;height:16px;vertical-align:middle;" alt="">`
-            : customSt.emoji.name)
-        : '';
-      html += `<div class="dc-custom-status"><span class="dc-custom-emoji">${emoji}</span><span class="dc-custom-text">${escHtml(customSt.state)}</span></div>`;
+    let html='';
+    if (custom&&custom.state) {
+      const em=custom.emoji?(custom.emoji.id?`<img src="https://cdn.discordapp.com/emojis/${custom.emoji.id}.webp?size=20" style="width:14px;height:14px;vertical-align:middle;" alt="">`:custom.emoji.name):'';
+      html+=`<div class="dcd-custom"><span>${em}</span><span>${esc(custom.state)}</span></div>`;
     }
-
-    if (spotify) {
-      const pct = (spotify.timestamps.start && spotify.timestamps.end)
-        ? Math.min(100, ((Date.now()-spotify.timestamps.start)/(spotify.timestamps.end-spotify.timestamps.start))*100) : 0;
-      html += `<div class="dc-spotify">
-        <img class="dc-spotify-art" src="${escHtml(spotify.album_art_url||'')}" alt="album art" onerror="this.style.display='none'">
-        <div class="dc-spotify-info">
-          <div class="dc-spotify-track">${escHtml(spotify.song)}</div>
-          <div class="dc-spotify-artist">${escHtml(spotify.artist)}</div>
-          <div class="dc-spotify-progress"><div class="dc-spotify-bar" id="sp-bar" style="width:${pct}%"></div></div>
+    if (sp) {
+      const pct=(sp.timestamps.start&&sp.timestamps.end)?Math.min(100,((Date.now()-sp.timestamps.start)/(sp.timestamps.end-sp.timestamps.start))*100):0;
+      html+=`<div class="dcd-track">
+        <img class="dcd-art" src="${esc(sp.album_art_url||'')}" alt="" onerror="this.style.display='none'">
+        <div class="dcd-info">
+          <div class="dcd-song">${esc(sp.song)}</div>
+          <div class="dcd-artist">${esc(sp.artist)}</div>
+          <div class="dcd-bar-wrap"><div class="dcd-bar" id="dcd-sp-bar" style="width:${pct}%"></div></div>
         </div>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
       </div>`;
-      if (spotify.timestamps.start && spotify.timestamps.end) {
-        const total = spotify.timestamps.end - spotify.timestamps.start;
-        spotifyTimer = setInterval(() => {
-          const bar = document.getElementById('sp-bar');
-          if (!bar) { clearInterval(spotifyTimer); return; }
-          bar.style.width = Math.min(100, ((Date.now()-spotify.timestamps.start)/total)*100) + '%';
-        }, 1000);
+      if (sp.timestamps.start&&sp.timestamps.end) {
+        const tot=sp.timestamps.end-sp.timestamps.start;
+        spTimer=setInterval(()=>{ const b=document.getElementById('dcd-sp-bar'); if(!b){clearInterval(spTimer);return;} b.style.width=Math.min(100,((Date.now()-sp.timestamps.start)/tot)*100)+'%'; },1000);
       }
     }
-
     others.forEach(act => {
       if (!act.name) return;
-      if (html) html += '<div class="dc-divider"></div>';
-      const largeImg = act.assets?.large_image
-        ? (act.assets.large_image.startsWith('mp:external/')
-            ? 'https://media.discordapp.net/external/'+act.assets.large_image.slice(12)
-            : `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.webp`) : '';
-      const smallImg = act.assets?.small_image
-        ? (act.assets.small_image.startsWith('mp:external/')
-            ? 'https://media.discordapp.net/external/'+act.assets.small_image.slice(12)
-            : `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.small_image}.webp`) : '';
-      const elapsedMs = act.timestamps?.start ? Date.now()-act.timestamps.start : null;
-      html += `<div class="dc-activity">
-        <div class="dc-activity-img-wrap">
-          ${largeImg ? `<img class="dc-activity-img" src="${escHtml(largeImg)}" alt="" onerror="this.style.display='none'">` : '<div class="dc-activity-img"></div>'}
-          ${smallImg ? `<img class="dc-activity-img-small" src="${escHtml(smallImg)}" alt="" onerror="this.style.display='none'">` : ''}
-        </div>
-        <div class="dc-activity-info">
-          <div class="dc-activity-name">${escHtml(act.name)}</div>
-          ${act.details ? `<div class="dc-activity-title">${escHtml(act.details)}</div>` : ''}
-          ${act.state   ? `<div class="dc-activity-detail">${escHtml(act.state)}</div>` : ''}
-          ${elapsedMs !== null ? `<div class="dc-activity-elapsed"><span class="dc-live-dot"></span>${fmtTime(elapsedMs)} elapsed</div>` : ''}
+      if (html) html+='<div class="dcd-divider"></div>';
+      const li2=act.assets?.large_image?(act.assets.large_image.startsWith('mp:external/')?'https://media.discordapp.net/external/'+act.assets.large_image.slice(12):`https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.webp`):'';
+      const el=act.timestamps?.start?Date.now()-act.timestamps.start:null;
+      html+=`<div class="dcd-act">
+        ${li2?`<img class="dcd-act-img" src="${esc(li2)}" alt="" onerror="this.style.display='none'">`:' <div class="dcd-act-img"></div>'}
+        <div style="flex:1;min-width:0;">
+          <div class="dcd-act-name">${esc(act.name)}</div>
+          ${act.details?`<div class="dcd-act-detail">${esc(act.details)}</div>`:''}
+          ${act.state?`<div class="dcd-act-state">${esc(act.state)}</div>`:''}
+          ${el!==null?`<div class="dcd-act-elapsed">▶ ${fmtT(el)} elapsed</div>`:''}
         </div>
       </div>`;
     });
-
-    if (!html) html = '<p class="dc-empty">no activity right now</p>';
-    dcBody.innerHTML = html;
+    if (!html) html='<p style="font-size:.64rem;color:var(--muted);text-align:center;padding:6px 0;">no activity right now</p>';
+    dcdContent.innerHTML=html;
   }
 
-  function fetchLanyard() {
+  const dcToggle = document.getElementById('dc-toggle-card');
+  const dcDrop   = document.getElementById('dc-dropdown');
+  dcToggle.addEventListener('click', e => { e.stopPropagation(); dcDrop.classList.toggle('open'); });
+  document.addEventListener('click', () => dcDrop.classList.remove('open'));
+
+  const DISCORD_ID='657910178577907713';
+  function fetchL(){
     fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
-      .then(r => r.json())
-      .then(j => { if (j.success) renderDiscord(j.data); else { setStatus('offline'); dcBody.innerHTML='<p class="dc-empty">could not load activity</p>'; } })
-      .catch(() => { setStatus('offline'); dcBody.innerHTML='<p class="dc-empty">could not load activity</p>'; });
+      .then(r=>r.json())
+      .then(j=>{ if(j.success) renderAll(j.data); else { setStatus('offline'); actText.textContent='could not load'; }})
+      .catch(()=>{ setStatus('offline'); actText.textContent='could not load'; });
   }
+  fetchL();
+  setInterval(fetchL,30000);
 
-  fetchLanyard();
-  setInterval(fetchLanyard, 30000);
-
-  (function connectWS() {
-    const ws = new WebSocket('wss://api.lanyard.rest/socket');
-    ws.onopen = () => ws.send(JSON.stringify({ op:2, d:{ subscribe_to_id: DISCORD_ID } }));
-    ws.onmessage = e => {
-      const msg = JSON.parse(e.data);
-      if (msg.op === 1) setInterval(() => ws.readyState===1 && ws.send(JSON.stringify({op:3})), msg.d.heartbeat_interval);
-      if (msg.op === 0 && msg.t === 'INIT_STATE')     renderDiscord(msg.d);
-      if (msg.op === 0 && msg.t === 'PRESENCE_UPDATE') renderDiscord(msg.d);
+  (function wsConnect(){
+    const ws=new WebSocket('wss://api.lanyard.rest/socket');
+    ws.onopen=()=>ws.send(JSON.stringify({op:2,d:{subscribe_to_id:DISCORD_ID}}));
+    ws.onmessage=e=>{
+      const m=JSON.parse(e.data);
+      if(m.op===1) setInterval(()=>ws.readyState===1&&ws.send(JSON.stringify({op:3})),m.d.heartbeat_interval);
+      if(m.op===0&&m.t==='INIT_STATE')    renderAll(m.d);
+      if(m.op===0&&m.t==='PRESENCE_UPDATE') renderAll(m.d);
     };
-    ws.onclose = () => setTimeout(connectWS, 5000);
+    ws.onclose=()=>setTimeout(wsConnect,5000);
   })();
 
 })();
