@@ -347,7 +347,8 @@
 
 <div id="cur"></div>
 <div id="cur-r"></div>
-<video id="bg-video" loop playsinline muted src="bg.mp4"></video>
+<!-- FIX 1: removed "muted" attribute -->
+<video id="bg-video" loop playsinline src="bg.mp4"></video>
 <div class="bg-glow bg-glow-a"></div>
 <div class="bg-glow bg-glow-b"></div>
 <div class="stars" id="stars"></div>
@@ -449,7 +450,8 @@
     mainEl.classList.add('visible');
     setTimeout(() => overlay.classList.add('gone'), 1000);
     const v = document.getElementById('bg-video');
-    v.play().catch(() => { v.muted = true; v.play(); });
+    // FIX 2: removed muted fallback, audio will now play
+    v.play().catch(err => console.warn('Autoplay blocked:', err));
   });
 
   const cur  = document.getElementById('cur');
