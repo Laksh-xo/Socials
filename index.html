@@ -33,7 +33,6 @@
       transform: translate(-50%,-50%);
       box-shadow: 0 0 8px var(--cyan), 0 0 16px rgba(0,245,255,0.4);
     }
-    /* ring removed — no border, invisible */
     #cur-r {
       position: fixed; width: 28px; height: 28px;
       border-radius: 50%;
@@ -89,20 +88,26 @@
       linear-gradient(rgba(168,85,247,.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(168,85,247,.05) 1px, transparent 1px);
     background-size: 70px 70px;
+    pointer-events: none;
   }
   #enter-overlay.fade-out { opacity: 0; pointer-events: none; }
   #enter-overlay.gone     { display: none; }
 
   #enter-btn {
     position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px;
-    background: none; border: none; cursor: pointer; padding: 36px 52px;
+    background: none; border: none;
+    cursor: pointer !important;
+    touch-action: manipulation;
+    padding: 36px 52px;
     -webkit-tap-highlight-color: transparent;
-    transition: transform .3s ease; z-index: 1;
+    transition: transform .3s ease; z-index: 2;
+    user-select: none; -webkit-user-select: none;
   }
   #enter-btn::before {
     content: ''; position: absolute; inset: 0; border-radius: 12px;
     border: 1px solid rgba(168,85,247,.2); background: rgba(168,85,247,.04);
     transition: border-color .3s, background .3s;
+    pointer-events: none;
   }
   #enter-btn:hover::before { border-color: rgba(168,85,247,.4); background: rgba(168,85,247,.08); }
   #enter-btn:hover { transform: scale(1.03); }
@@ -111,15 +116,17 @@
   .e-avatar {
     width: 80px; height: 80px; border-radius: 50%; overflow: hidden;
     box-shadow: 0 0 0 1.5px var(--pink), 0 0 24px rgba(168,85,247,.4);
+    pointer-events: none;
   }
   .e-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .e-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: #fff; letter-spacing: .12em; }
+  .e-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: #fff; letter-spacing: .12em; pointer-events: none; }
   .e-cta {
     padding: 9px 34px; background: transparent;
     color: var(--pink); border: 1px solid var(--pink); border-radius: 2px;
     font-family: 'IBM Plex Mono', monospace; font-size: .65rem;
     letter-spacing: .18em; text-transform: uppercase;
     position: relative; overflow: hidden; transition: color .25s; display: block;
+    pointer-events: none;
   }
   .e-cta::after {
     content: ''; position: absolute; inset: 0;
@@ -128,7 +135,7 @@
   }
   #enter-btn:hover .e-cta { color: #07050d; }
   #enter-btn:hover .e-cta::after { transform: translateX(0); }
-  .e-dots { display: flex; gap: 5px; }
+  .e-dots { display: flex; gap: 5px; pointer-events: none; }
   .e-dots span {
     width: 4px; height: 4px; border-radius: 50%; background: var(--pink);
     animation: blink 1.4s ease-in-out infinite;
@@ -177,13 +184,11 @@
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     text-align: center; padding: 0 20px; gap: 0;
-    /* prevent hero from overflowing its flex cell */
     min-height: 0; overflow: hidden;
   }
 
   .hero-name {
     font-family: 'Bebas Neue', sans-serif;
-    /* tighter clamp so it never pushes the cards off-screen */
     font-size: clamp(4rem, 15vw, 12rem);
     line-height: .92; color: var(--pink);
     letter-spacing: .02em;
@@ -258,6 +263,7 @@
     background: rgba(255,255,255,.025);
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     text-decoration: none;
+    touch-action: manipulation;
     transition: border-color .2s, background .2s, transform .15s, box-shadow .2s;
     -webkit-tap-highlight-color: transparent;
     position: relative; overflow: hidden;
@@ -350,6 +356,7 @@
     border: 1px solid rgba(192,132,252,.25); background: rgba(8,6,15,.72);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     display: flex; align-items: center; justify-content: center;
+    touch-action: manipulation;
     transition: border-color .2s, background .2s, transform .15s, opacity .3s;
     opacity: 0; pointer-events: none; -webkit-tap-highlight-color: transparent;
   }
@@ -364,7 +371,6 @@
     #mute-btn:active { transform: scale(.93); background: rgba(168,85,247,.15); }
   }
 
-  /* ── Responsive: short/narrow screens ── */
   @media (max-width: 600px) {
     .hero-name { font-size: clamp(3.5rem, 20vw, 7rem); }
     .links-row { justify-content: flex-start; }
@@ -456,4 +462,286 @@
         <span class="lc-name">Twitch</span>
         <span class="lc-handle">lakshxplayz</span>
       </a>
-      <a href="https://www.instagram.com/lakshx.jpeg" target="_blank" rel="noopener no
+      <a href="https://www.instagram.com/lakshx.jpeg" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">📸</span>
+        <span class="lc-name">Instagram</span>
+        <span class="lc-handle">lakshx.jpeg</span>
+      </a>
+      <div class="dc-card-wrap">
+        <div class="link-card" id="dc-toggle-card" style="touch-action:manipulation;">
+          <span class="lc-icon">
+            <svg width="15" height="11" viewBox="0 0 24 18" fill="rgba(240,234,248,0.75)">
+              <path d="M20.317 1.492a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 .677 1.492a.07.07 0 0 0-.032.027C-2.533 6.168-3.32 10.702-2.901 15.179a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.1.246.198.373.292a.077.077 0 0 1-.006.127c-.598.35-1.22.645-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+            </svg>
+          </span>
+          <span class="lc-name">Discord</span>
+          <span class="lc-handle" id="dc-card-handle">tap for activity</span>
+        </div>
+        <div class="dc-dropdown" id="dc-dropdown">
+          <div class="dcd-loading" id="dcd-content"></div>
+        </div>
+      </div>
+      <a href="https://steamcommunity.com/id/lakshx" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">🎮</span>
+        <span class="lc-name">Steam</span>
+        <span class="lc-handle">lakshx</span>
+      </a>
+      <a href="https://www.roblox.com/users/5496495013/profile" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">🟥</span>
+        <span class="lc-name">Roblox</span>
+        <span class="lc-handle">lakshx</span>
+      </a>
+      <a href="https://www.snapchat.com/@lakshx.jpeg" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">👻</span>
+        <span class="lc-name">Snapchat</span>
+        <span class="lc-handle">lakshx.jpeg</span>
+      </a>
+      <a href="https://open.spotify.com/user/314rymteiostne2wjommzch2gmvm" target="_blank" rel="noopener noreferrer" class="link-card">
+        <span class="lc-icon">🎵</span>
+        <span class="lc-name">Spotify</span>
+        <span class="lc-handle">lakshx</span>
+      </a>
+    </div>
+    <p class="footer-txt">made with ♥ · laksh · 2025</p>
+  </div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  const overlay   = document.getElementById('enter-overlay');
+  const mainEl    = document.getElementById('main');
+  const muteBtn   = document.getElementById('mute-btn');
+  const iconSound = document.getElementById('icon-sound');
+  const iconMute  = document.getElementById('icon-mute');
+  const video     = document.getElementById('bg-video');
+  const enterBtn  = document.getElementById('enter-btn');
+  let isMuted = false;
+  let entered = false;
+
+  function doEnter() {
+    if (entered) return;
+    entered = true;
+    overlay.classList.add('fade-out');
+    mainEl.classList.add('visible');
+    setTimeout(() => overlay.classList.add('gone'), 1000);
+    video.play().catch(e => console.warn('Autoplay blocked:', e));
+    setTimeout(() => muteBtn.classList.add('show'), 600);
+  }
+
+  enterBtn.addEventListener('click', doEnter);
+  enterBtn.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    doEnter();
+  });
+
+  muteBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    isMuted = !isMuted;
+    video.muted = isMuted;
+    iconSound.style.display = isMuted ? 'none' : '';
+    iconMute.style.display  = isMuted ? ''     : 'none';
+    muteBtn.setAttribute('aria-label', isMuted ? 'Unmute audio' : 'Mute audio');
+  });
+
+  const cur  = document.getElementById('cur');
+  const curR = document.getElementById('cur-r');
+  if (window.matchMedia('(pointer:fine)').matches && cur) {
+    let mx=-100, my=-100, rx=-100, ry=-100;
+    document.addEventListener('mousemove', e => {
+      mx=e.clientX; my=e.clientY;
+      cur.style.left=mx+'px'; cur.style.top=my+'px';
+    });
+    (function loop(){ rx+=(mx-rx)*.12; ry+=(my-ry)*.12; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(loop); })();
+    document.querySelectorAll('a,button,.link-card').forEach(el => {
+      el.addEventListener('mouseenter',()=>{ cur.classList.add('h'); curR.classList.add('h'); });
+      el.addEventListener('mouseleave',()=>{ cur.classList.remove('h'); curR.classList.remove('h'); });
+    });
+  }
+
+  const starsEl = document.getElementById('stars');
+  for (let i=0; i<26; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random()*3+2;
+    const isPink = Math.random() > .45;
+    s.style.cssText = [
+      'width:'+sz+'px','height:'+sz+'px',
+      'top:'+Math.random()*100+'%','left:'+Math.random()*100+'%',
+      '--d:'+(2+Math.random()*5)+'s','--del:'+(Math.random()*6)+'s',
+      '--op:'+(0.3+Math.random()*.5),
+      'border-radius:'+(Math.random()>.5?'50%':'2px'),
+      'background:'+(isPink?'var(--pink)':'var(--cyan)')
+    ].join(';');
+    starsEl.appendChild(s);
+  }
+
+  const LINES = [
+    '18 · Game Developer · Content Creator',
+    'Grinding Ranked Like It\'s A Job',
+    'Built Different, Coded Different',
+    '18 · Discord Mod · Gamer · Creator',
+  ];
+  let li=0, ci=0, del=false;
+  const tEl = document.getElementById('tagline');
+  function type(){
+    const line=LINES[li];
+    if (!del) {
+      tEl.innerHTML=line.slice(0,ci+1)+'<span class="cursor-blink"></span>';
+      ci++;
+      if (ci>=line.length){ del=true; setTimeout(type,2000); return; }
+    } else {
+      tEl.innerHTML=line.slice(0,ci)+'<span class="cursor-blink"></span>';
+      ci--;
+      if (ci<0){ del=false; li=(li+1)%LINES.length; ci=0; setTimeout(type,380); return; }
+    }
+    setTimeout(type, del?38:60);
+  }
+  setTimeout(type,1300);
+
+  const statusPill    = document.getElementById('status-pill');
+  const statusLabel   = document.getElementById('status-label');
+  const actDot        = document.getElementById('act-dot');
+  const actText       = document.getElementById('act-text');
+  const dcdContent    = document.getElementById('dcd-content');
+  const dcHandle      = document.getElementById('dc-card-handle');
+  const heroWrap      = document.getElementById('hero-activity-wrap');
+  const actCountBadge = document.getElementById('act-count-badge');
+  const actCountNum   = document.getElementById('act-count-num');
+  let spTimer = null;
+
+  function setStatus(s) {
+    const m={online:'online',idle:'idle',dnd:'do not disturb',offline:'offline'};
+    statusPill.className='status-pill '+(s==='dnd'?'dnd':s==='idle'?'idle':s==='online'?'online':'');
+    statusLabel.textContent='discord · '+(m[s]||s);
+  }
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function fmtT(ms){ const s=Math.floor(ms/1e3),m=Math.floor(s/60),h=Math.floor(m/60); return h>0?h+'h '+(m%60)+'m':m>0?m+'m '+(s%60)+'s':s+'s'; }
+
+  function renderHeroActivities(sp, others, status) {
+    heroWrap.querySelectorAll('.act-extra').forEach(el => el.remove());
+    const allItems = [];
+    if (sp) allItems.push({ dotClass:'act-dot spotify', text: sp.song+' — '+sp.artist });
+    others.forEach(act => {
+      if (!act.name) return;
+      allItems.push({ dotClass:'act-dot playing', text: act.name+(act.details?' · '+act.details:'') });
+    });
+    if (allItems.length === 0) {
+      actDot.className = 'act-dot'+(status==='dnd'?' dnd-d':'');
+      actText.textContent = status==='offline' ? 'not around right now' : 'discord · '+(status==='dnd'?'do not disturb':status);
+      actCountBadge.classList.remove('show');
+    } else {
+      actDot.className = allItems[0].dotClass;
+      actText.textContent = allItems[0].text;
+      for (let i=1; i<allItems.length; i++) {
+        const row = document.createElement('div');
+        row.className = 'hero-activity act-extra';
+        const dot = document.createElement('span'); dot.className = allItems[i].dotClass;
+        const txt = document.createElement('span'); txt.textContent = allItems[i].text;
+        row.appendChild(dot); row.appendChild(txt);
+        heroWrap.appendChild(row);
+        requestAnimationFrame(() => setTimeout(() => row.classList.add('visible'), i*80));
+      }
+      if (allItems.length > 1) { actCountNum.textContent=allItems.length; actCountBadge.classList.add('show'); }
+      else actCountBadge.classList.remove('show');
+    }
+    requestAnimationFrame(() => document.getElementById('act-primary').classList.add('visible'));
+  }
+
+  function renderDcHandle(sp, others) {
+    const total = (sp?1:0)+others.length;
+    dcHandle.textContent = total===0 ? 'tap for activity' : total===1 ? (sp?'listening now':'playing now') : total+' activities';
+  }
+
+  function renderAll(data) {
+    if (spTimer){ clearInterval(spTimer); spTimer=null; }
+    const status = data.discord_status||'offline';
+    setStatus(status);
+    const acts   = data.activities||[];
+    const sp     = data.spotify;
+    const custom = acts.find(a=>a.type===4);
+    const others = acts.filter(a=>a.type!==4&&a.type!==2);
+    renderHeroActivities(sp, others, status);
+    renderDcHandle(sp, others);
+
+    let html='';
+    if (custom&&custom.state) {
+      const em = custom.emoji ? (custom.emoji.id ? `<img src="https://cdn.discordapp.com/emojis/${custom.emoji.id}.webp?size=20" style="width:14px;height:14px;vertical-align:middle;" alt="">` : custom.emoji.name) : '';
+      html += `<div class="dcd-custom"><span>${em}</span><span>${esc(custom.state)}</span></div>`;
+    }
+    if (sp) {
+      if (html) html+='<div class="dcd-divider"></div>';
+      html+=`<div class="dcd-section-header">spotify</div>`;
+      const pct = (sp.timestamps.start&&sp.timestamps.end) ? Math.min(100,((Date.now()-sp.timestamps.start)/(sp.timestamps.end-sp.timestamps.start))*100) : 0;
+      html+=`<div class="dcd-track">
+        <img class="dcd-art" src="${esc(sp.album_art_url||'')}" alt="" onerror="this.style.display='none'">
+        <div class="dcd-info">
+          <div class="dcd-song">${esc(sp.song)}</div>
+          <div class="dcd-artist">${esc(sp.artist)}</div>
+          <div class="dcd-bar-wrap"><div class="dcd-bar" id="dcd-sp-bar" style="width:${pct}%"></div></div>
+        </div>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+      </div>`;
+      if (sp.timestamps.start&&sp.timestamps.end) {
+        const tot=sp.timestamps.end-sp.timestamps.start;
+        spTimer=setInterval(()=>{ const b=document.getElementById('dcd-sp-bar'); if(!b){clearInterval(spTimer);return;} b.style.width=Math.min(100,((Date.now()-sp.timestamps.start)/tot)*100)+'%'; },1000);
+      }
+    }
+    if (others.length>0) {
+      if (html) html+='<div class="dcd-divider"></div>';
+      html+=`<div class="dcd-section-header">${others.length>1?others.length+' activities':'activity'}</div>`;
+      others.forEach((act,idx)=>{
+        if (!act.name) return;
+        if (idx>0) html+='<div class="dcd-divider"></div>';
+        const li2=act.assets?.large_image ? (act.assets.large_image.startsWith('mp:external/') ? 'https://media.discordapp.net/external/'+act.assets.large_image.slice(12) : `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.webp`) : '';
+        const el=act.timestamps?.start ? Date.now()-act.timestamps.start : null;
+        html+=`<div class="dcd-act">
+          ${li2?`<img class="dcd-act-img" src="${esc(li2)}" alt="" onerror="this.style.display='none'">` : '<div class="dcd-act-img"></div>'}
+          <div style="flex:1;min-width:0;">
+            <div class="dcd-act-name">${esc(act.name)}</div>
+            ${act.details?`<div class="dcd-act-detail">${esc(act.details)}</div>`:''}
+            ${act.state?`<div class="dcd-act-state">${esc(act.state)}</div>`:''}
+            ${el!==null?`<div class="dcd-act-elapsed">▶ ${fmtT(el)} elapsed</div>`:''}
+          </div>
+        </div>`;
+      });
+    }
+    if (!html) html='<p style="font-size:.64rem;color:var(--muted);text-align:center;padding:6px 0;">no activity right now</p>';
+    dcdContent.innerHTML=html;
+  }
+
+  const dcToggle = document.getElementById('dc-toggle-card');
+  const dcDrop   = document.getElementById('dc-dropdown');
+  dcToggle.addEventListener('click', e=>{ e.stopPropagation(); dcDrop.classList.toggle('open'); });
+  dcToggle.addEventListener('touchend', e=>{ e.preventDefault(); e.stopPropagation(); dcDrop.classList.toggle('open'); });
+  document.addEventListener('click', ()=>dcDrop.classList.remove('open'));
+  document.addEventListener('touchend', ()=>dcDrop.classList.remove('open'));
+
+  const DISCORD_ID='657910178577907713';
+  function fetchL(){
+    fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
+      .then(r=>r.json())
+      .then(j=>{ if(j.success) renderAll(j.data); else { setStatus('offline'); actText.textContent='could not load'; }})
+      .catch(()=>{ setStatus('offline'); actText.textContent='could not load'; });
+  }
+  fetchL();
+  setInterval(fetchL,30000);
+
+  (function wsConnect(){
+    const ws=new WebSocket('wss://api.lanyard.rest/socket');
+    ws.onopen=()=>ws.send(JSON.stringify({op:2,d:{subscribe_to_id:DISCORD_ID}}));
+    ws.onmessage=e=>{
+      const m=JSON.parse(e.data);
+      if(m.op===1) setInterval(()=>ws.readyState===1&&ws.send(JSON.stringify({op:3})),m.d.heartbeat_interval);
+      if(m.op===0&&m.t==='INIT_STATE')      renderAll(m.d);
+      if(m.op===0&&m.t==='PRESENCE_UPDATE') renderAll(m.d);
+    };
+    ws.onclose=()=>setTimeout(wsConnect,5000);
+  })();
+
+})();
+</script>
+</body>
+</html>
