@@ -18,7 +18,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    height: 100vh; width: 100vw; overflow: hidden;
+    height: 100dvh; width: 100vw; overflow: hidden;
     font-family: 'IBM Plex Mono', monospace;
     background: var(--bg);
     color: var(--text);
@@ -147,9 +147,10 @@
     50% { opacity: 1; transform: scale(1); box-shadow: 0 0 5px var(--pink); }
   }
 
+  /* ── MAIN LAYOUT ── */
   #main {
     position: relative; z-index: 10;
-    height: 100vh; width: 100vw;
+    height: 100dvh; width: 100vw;
     display: flex; flex-direction: column;
     align-items: center; justify-content: space-between;
     overflow: hidden;
@@ -159,7 +160,7 @@
 
   .top-bar {
     width: 100%; display: flex; justify-content: center; align-items: center;
-    padding: 24px 24px 0; flex-shrink: 0;
+    padding: 20px 24px 0; flex-shrink: 0;
   }
   .status-pill {
     display: inline-flex; align-items: center; gap: 8px;
@@ -180,6 +181,7 @@
   .status-pill.dnd    { border-color: rgba(237,66,69,.35); color: rgba(237,66,69,.9); }
   .status-pill.dnd    .s-dot { background: #ed4245; box-shadow: 0 0 6px rgba(237,66,69,.8); }
 
+  /* ── HERO ── */
   .hero {
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
@@ -202,7 +204,7 @@
   .hero-tagline {
     font-size: clamp(.62rem, 1.3vw, .85rem);
     color: var(--muted); font-style: italic;
-    letter-spacing: .05em; margin-top: 16px; min-height: 1.4em;
+    letter-spacing: .05em; margin-top: 14px; min-height: 1.4em;
   }
   .cursor-blink {
     display: inline-block; width: 2px; height: 1em;
@@ -212,7 +214,7 @@
   @keyframes cblink { 0%,100%{opacity:1} 50%{opacity:0} }
 
   .activity-divider {
-    width: 44px; height: 1px; margin: 14px 0;
+    width: 44px; height: 1px; margin: 12px 0;
     background: linear-gradient(90deg, transparent, rgba(192,132,252,.55), transparent);
   }
 
@@ -230,6 +232,9 @@
     width: 7px; height: 7px; border-radius: 50%; background: var(--muted);
     flex-shrink: 0; transition: background .4s;
   }
+  /* FIX: status-colored dots for hero activity */
+  .act-dot.online  { background: #3ba55c; box-shadow: 0 0 6px rgba(59,165,92,.8); }
+  .act-dot.idle    { background: #faa81a; box-shadow: 0 0 6px rgba(250,168,26,.8); }
   .act-dot.playing { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
   .act-dot.spotify { background: #1DB954; box-shadow: 0 0 8px rgba(29,185,84,.8); }
   .act-dot.dnd-d   { background: #ed4245; box-shadow: 0 0 6px rgba(237,66,69,.8); }
@@ -242,23 +247,25 @@
   .act-count-badge.show { display: flex; }
   .act-count-badge span { color: var(--cyan); font-size: .6rem; }
 
+  /* ── BOTTOM LINKS ── */
   .bottom-links {
     width: 100%; flex-shrink: 0;
-    padding: 0 20px max(18px, env(safe-area-inset-bottom, 18px));
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 0 12px max(16px, env(safe-area-inset-bottom, 16px));
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
   }
 
+  /* FIX: two-row grid on mobile, single scrollable row on desktop */
   .links-row {
-    display: flex; gap: 8px; width: 100%; max-width: 900px;
-    overflow-x: auto; justify-content: center;
-    scrollbar-width: none; -ms-overflow-style: none; padding: 2px 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    width: 100%;
+    max-width: 900px;
   }
-  .links-row::-webkit-scrollbar { display: none; }
 
   .link-card {
     display: flex; flex-direction: column; align-items: flex-start;
-    gap: 5px; padding: 12px 14px; border-radius: 10px;
-    min-width: 100px; flex: 1; max-width: 130px;
+    gap: 4px; padding: 10px 12px; border-radius: 10px;
     border: 1px solid rgba(255,255,255,.07);
     background: rgba(255,255,255,.025);
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -267,6 +274,7 @@
     transition: border-color .2s, background .2s, transform .15s, box-shadow .2s;
     -webkit-tap-highlight-color: transparent;
     position: relative; overflow: hidden;
+    min-width: 0;
   }
   .link-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
@@ -285,14 +293,23 @@
   @media (pointer: coarse) {
     .link-card:active { background: rgba(168,85,247,.08); transform: scale(.97); }
   }
-  .lc-icon { font-size: 1rem; line-height: 1; }
+  .lc-icon { font-size: .9rem; line-height: 1; }
   .lc-name {
-    font-size: .63rem; letter-spacing: .1em; text-transform: uppercase;
+    font-size: .58rem; letter-spacing: .08em; text-transform: uppercase;
     color: rgba(240,234,248,.85); transition: color .2s;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
   }
-  .lc-handle { font-size: .54rem; letter-spacing: .03em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .lc-handle {
+    font-size: .5rem; letter-spacing: .03em; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  }
 
-  .dc-card-wrap { position: relative; min-width: 100px; flex: 1; max-width: 130px; }
+  /* Discord dropdown wrapper spans full width in grid */
+  .dc-card-wrap {
+    position: relative;
+    /* no special sizing needed — it's a grid child now */
+  }
+
   .dc-dropdown {
     position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
     width: 300px; max-width: calc(100vw - 32px);
@@ -349,9 +366,10 @@
     color: rgba(240,234,248,.14); text-align: center;
   }
 
+  /* ── MUTE BTN ── */
   #mute-btn {
     position: fixed;
-    bottom: max(24px, env(safe-area-inset-bottom, 24px)); right: 24px;
+    bottom: max(20px, env(safe-area-inset-bottom, 20px)); right: 16px;
     z-index: 200; width: 38px; height: 38px; border-radius: 50%;
     border: 1px solid rgba(192,132,252,.25); background: rgba(8,6,15,.72);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -371,28 +389,52 @@
     #mute-btn:active { transform: scale(.93); background: rgba(168,85,247,.15); }
   }
 
-  @media (max-width: 600px) {
-    .hero-name { font-size: clamp(3.5rem, 20vw, 7rem); }
-    .links-row { justify-content: flex-start; }
-    .link-card, .dc-card-wrap { min-width: 90px; max-width: 115px; }
-    #mute-btn { bottom: max(18px, env(safe-area-inset-bottom, 18px)); right: 16px; }
+  /* ── RESPONSIVE ── */
+  /* Desktop: revert to single scrollable row */
+  @media (min-width: 700px) {
+    .links-row {
+      grid-template-columns: none;
+      display: flex; gap: 8px;
+      overflow-x: auto; justify-content: center;
+      scrollbar-width: none; -ms-overflow-style: none; padding: 2px 0;
+    }
+    .links-row::-webkit-scrollbar { display: none; }
+    .link-card, .dc-card-wrap { min-width: 100px; max-width: 130px; flex: 1; }
   }
+
+  /* Mobile grid tweaks */
+  @media (max-width: 699px) {
+    .hero-name { font-size: clamp(3.2rem, 18vw, 6rem); }
+    .bottom-links { padding-left: 10px; padding-right: 10px; gap: 5px; }
+    .links-row { gap: 5px; }
+    .link-card { padding: 9px 10px; gap: 3px; border-radius: 8px; }
+    .lc-icon { font-size: .85rem; }
+  }
+
+  /* Very small screens */
+  @media (max-width: 360px) {
+    .links-row { grid-template-columns: repeat(4, 1fr); }
+    .lc-handle { display: none; }
+    .lc-name { font-size: .54rem; }
+  }
+
   @media (max-height: 700px) {
-    .top-bar { padding-top: 14px; }
+    .top-bar { padding-top: 12px; }
     .hero-name { font-size: clamp(3rem, 12vw, 8rem); }
-    .activity-divider { margin: 10px 0; }
-    .hero-tagline { margin-top: 12px; }
-    .bottom-links { padding-bottom: 12px; gap: 6px; }
-    .link-card { padding: 10px 12px; }
+    .activity-divider { margin: 8px 0; }
+    .hero-tagline { margin-top: 10px; }
+    .bottom-links { padding-bottom: 10px; gap: 5px; }
+    .link-card { padding: 8px 10px; }
   }
   @media (max-height: 580px) {
     .hero-name { font-size: clamp(2.4rem, 9vw, 5.5rem); }
-    .activity-divider { margin: 7px 0; }
+    .activity-divider { margin: 6px 0; }
     .hero-activity-wrap { min-height: 30px; }
-    .hero-tagline { margin-top: 8px; font-size: .6rem; }
-    .top-bar { padding-top: 10px; }
-    .bottom-links { padding-bottom: 8px; gap: 4px; }
-    .link-card { padding: 8px 10px; gap: 3px; }
+    .hero-tagline { margin-top: 6px; font-size: .6rem; }
+    .top-bar { padding-top: 8px; }
+    .bottom-links { padding-bottom: 6px; gap: 4px; }
+    .link-card { padding: 6px 8px; gap: 2px; }
+    .lc-handle { display: none; }
   }
 </style>
 </head>
@@ -470,12 +512,12 @@
       <div class="dc-card-wrap">
         <div class="link-card" id="dc-toggle-card" style="touch-action:manipulation;">
           <span class="lc-icon">
-            <svg width="15" height="11" viewBox="0 0 24 18" fill="rgba(240,234,248,0.75)">
+            <svg width="14" height="11" viewBox="0 0 24 18" fill="rgba(240,234,248,0.75)">
               <path d="M20.317 1.492a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 .677 1.492a.07.07 0 0 0-.032.027C-2.533 6.168-3.32 10.702-2.901 15.179a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.1.246.198.373.292a.077.077 0 0 1-.006.127c-.598.35-1.22.645-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
             </svg>
           </span>
           <span class="lc-name">Discord</span>
-          <span class="lc-handle" id="dc-card-handle">tap for activity</span>
+          <span class="lc-handle" id="dc-card-handle">activity</span>
         </div>
         <div class="dc-dropdown" id="dc-dropdown">
           <div class="dcd-loading" id="dcd-content"></div>
@@ -629,7 +671,12 @@
       allItems.push({ dotClass:'act-dot playing', text: act.name+(act.details?' · '+act.details:'') });
     });
     if (allItems.length === 0) {
-      actDot.className = 'act-dot'+(status==='dnd'?' dnd-d':'');
+      // FIX: apply correct status dot color when no activities
+      const dotClass = status==='online' ? 'act-dot online'
+                     : status==='idle'   ? 'act-dot idle'
+                     : status==='dnd'    ? 'act-dot dnd-d'
+                     : 'act-dot';
+      actDot.className = dotClass;
       actText.textContent = status==='offline' ? 'not around right now' : 'discord · '+(status==='dnd'?'do not disturb':status);
       actCountBadge.classList.remove('show');
     } else {
@@ -652,7 +699,7 @@
 
   function renderDcHandle(sp, others) {
     const total = (sp?1:0)+others.length;
-    dcHandle.textContent = total===0 ? 'tap for activity' : total===1 ? (sp?'listening now':'playing now') : total+' activities';
+    dcHandle.textContent = total===0 ? 'activity' : total===1 ? (sp?'listening':'playing') : total+' active';
   }
 
   function renderAll(data) {
