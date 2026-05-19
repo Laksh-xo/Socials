@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Laksh &lt;3</title>
+<title>Laksh &lt;3\!!</title>
 <link rel="icon" type="image/jpeg" href="yumaki_match_pfp_2_2.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
 <style>
@@ -390,16 +390,15 @@
   }
 
   /* ── RESPONSIVE ── */
-  /* Desktop: revert to single scrollable row */
+  /* Desktop: 8-column grid that fills the row without overflow */
   @media (min-width: 700px) {
     .links-row {
-      grid-template-columns: none;
-      display: flex; gap: 8px;
-      overflow-x: auto; justify-content: center;
-      scrollbar-width: none; -ms-overflow-style: none; padding: 2px 0;
+      grid-template-columns: repeat(8, 1fr);
+      display: grid; gap: 8px;
+      max-width: 960px;
     }
-    .links-row::-webkit-scrollbar { display: none; }
-    .link-card, .dc-card-wrap { min-width: 100px; max-width: 130px; flex: 1; }
+    .link-card { min-width: 0; }
+    .dc-card-wrap { min-width: 0; }
   }
 
   /* Mobile grid tweaks */
@@ -463,7 +462,7 @@
 <div id="enter-overlay">
   <button id="enter-btn" aria-label="Enter">
     <div class="e-avatar"><img src="yumaki_match_pfp_2_2.jpg" alt="Laksh"/></div>
-    <span class="e-name">Laksh &lt;3</span>
+    <span class="e-name">Laksh &lt;3\!!</span>
     <span class="e-cta">enter</span>
     <div class="e-dots"><span></span><span></span><span></span></div>
   </button>
@@ -478,7 +477,7 @@
   </div>
 
   <div class="hero">
-    <h1 class="hero-name">laksh &lt;3</h1>
+    <h1 class="hero-name">laksh &lt;3\!!</h1>
     <p class="hero-tagline" id="tagline"></p>
     <div class="activity-divider"></div>
     <div class="hero-activity-wrap" id="hero-activity-wrap">
@@ -497,17 +496,17 @@
       <a href="https://www.youtube.com/channel/UCYmXwWSLJvguHhP-nFo69Jg" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">▶</span>
         <span class="lc-name">YouTube</span>
-        <span class="lc-handle">lakshxplayz</span>
+        <span class="lc-handle">LakshxPlayz</span>
       </a>
       <a href="https://www.twitch.tv/lakshxplayz" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">🎮</span>
         <span class="lc-name">Twitch</span>
-        <span class="lc-handle">lakshxplayz</span>
+        <span class="lc-handle">LakshxPlayz</span>
       </a>
       <a href="https://www.instagram.com/lakshx.jpeg" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">📸</span>
         <span class="lc-name">Instagram</span>
-        <span class="lc-handle">lakshx.jpeg</span>
+        <span class="lc-handle">Lakshx.jpeg</span>
       </a>
       <div class="dc-card-wrap">
         <div class="link-card" id="dc-toggle-card" style="touch-action:manipulation;">
@@ -526,25 +525,25 @@
       <a href="https://steamcommunity.com/id/lakshx" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">🎮</span>
         <span class="lc-name">Steam</span>
-        <span class="lc-handle">lakshx</span>
+        <span class="lc-handle">Laksh</span>
       </a>
       <a href="https://www.roblox.com/users/5496495013/profile" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">🟥</span>
         <span class="lc-name">Roblox</span>
-        <span class="lc-handle">lakshx</span>
+        <span class="lc-handle">Laksh</span>
       </a>
       <a href="https://www.snapchat.com/@lakshx.jpeg" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">👻</span>
         <span class="lc-name">Snapchat</span>
-        <span class="lc-handle">lakshx.jpeg</span>
+        <span class="lc-handle">Lakshx.jpeg</span>
       </a>
       <a href="https://open.spotify.com/user/314rymteiostne2wjommzch2gmvm" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">🎵</span>
         <span class="lc-name">Spotify</span>
-        <span class="lc-handle">lakshx</span>
+        <span class="lc-handle">Laksh</span>
       </a>
     </div>
-    <p class="footer-txt">made with ♥ · laksh · 2025</p>
+    <p class="footer-txt">Made with ♥ · Laksh · 2025</p>
   </div>
 </main>
 
@@ -623,7 +622,7 @@
     '18 · Game Developer · Content Creator',
     'Grinding Ranked Like It\'s A Job',
     'Built Different, Coded Different',
-    '18 · Discord Mod · Gamer · Creator',
+    '18 · Discord Moderation · Gamer · Creator',
   ];
   let li=0, ci=0, del=false;
   const tEl = document.getElementById('tagline');
