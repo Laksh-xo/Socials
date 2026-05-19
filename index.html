@@ -671,12 +671,12 @@
     });
     if (allItems.length === 0) {
       // FIX: apply correct status dot color when no activities
-      const dotClass = status==='online' ? 'act-dot online'
-                     : status==='idle'   ? 'act-dot idle'
-                     : status==='dnd'    ? 'act-dot dnd-d'
+      const dotClass = status==='Online' ? 'act-dot Online'
+                     : status==='Idle'   ? 'act-dot Idle'
+                     : status==='Dnd'    ? 'act-dot Dnd-d'
                      : 'act-dot';
       actDot.className = dotClass;
-      actText.textContent = status==='offline' ? 'not around right now' : 'discord · '+(status==='dnd'?'do not disturb':status);
+      actText.textContent = status==='Offline' ? 'Not Around Right Now' : 'discord · '+(status==='DND'?'Do Not Disturb':status);
       actCountBadge.classList.remove('show');
     } else {
       actDot.className = allItems[0].dotClass;
