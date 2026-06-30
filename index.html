@@ -13,6 +13,17 @@
     --bg: #08060f;
     --text: #f5f0ff;
     --muted: rgba(245,240,255,0.45);
+
+    --dc-bg: #232428;
+    --dc-bg-2: #1e1f22;
+    --dc-bg-3: #2b2d31;
+    --dc-text: #f2f3f5;
+    --dc-muted: #949ba4;
+    --dc-header: #b5bac1;
+    --dc-online: #23a55a;
+    --dc-idle: #f0b232;
+    --dc-dnd: #f23f42;
+    --dc-offline: #80848e;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -147,7 +158,6 @@
     50% { opacity: 1; transform: scale(1); box-shadow: 0 0 5px var(--pink); }
   }
 
-  /* ── MAIN LAYOUT ── */
   #main {
     position: relative; z-index: 10;
     height: 100dvh; width: 100vw;
@@ -181,7 +191,6 @@
   .status-pill.dnd    { border-color: rgba(237,66,69,.35); color: rgba(237,66,69,.9); }
   .status-pill.dnd    .s-dot { background: #ed4245; box-shadow: 0 0 6px rgba(237,66,69,.8); }
 
-  /* ── HERO ── */
   .hero {
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
@@ -246,7 +255,6 @@
   .act-count-badge.show { display: flex; }
   .act-count-badge span { color: var(--cyan); font-size: .6rem; }
 
-  /* ── BOTTOM LINKS ── */
   .bottom-links {
     width: 100%; flex-shrink: 0;
     padding: 0 12px max(16px, env(safe-area-inset-bottom, 16px));
@@ -292,14 +300,11 @@
     .link-card:active { background: rgba(168,85,247,.08); transform: scale(.97); }
   }
 
-  /* ── PLATFORM LOGO ICONS ── */
   .lc-icon {
     width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
   .lc-icon svg { width: 100%; height: 100%; display: block; }
-
-  /* Brand colours shown on hover via transition */
   .link-card .lc-icon svg { transition: fill .2s, opacity .2s; }
 
   .lc-name {
@@ -312,68 +317,144 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
   }
 
-  /* Discord dropdown wrapper */
   .dc-card-wrap {
     position: relative;
   }
 
+  /* ───────────────────────────────────────────
+     DISCORD PROFILE POPOUT (visual match)
+  ─────────────────────────────────────────── */
   .dc-dropdown {
     position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
     width: 300px; max-width: calc(100vw - 32px);
-    border: 1px solid rgba(192,132,252,.18); border-radius: 10px;
-    background: rgba(7,5,13,.94);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    padding: 12px; gap: 8px; z-index: 100;
-    box-shadow: 0 -8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(192,132,252,.07);
+    border-radius: 8px;
+    background: var(--dc-bg);
+    padding: 0; z-index: 100;
+    box-shadow: 0 8px 16px rgba(0,0,0,.24), 0 0 0 1px rgba(0,0,0,.5);
     display: none; flex-direction: column;
-    max-height: 420px; overflow-y: auto;
-    scrollbar-width: thin; scrollbar-color: rgba(168,85,247,.25) transparent;
-  }
-  .dc-dropdown::-webkit-scrollbar { width: 3px; }
-  .dc-dropdown::-webkit-scrollbar-track { background: transparent; }
-  .dc-dropdown::-webkit-scrollbar-thumb { background: rgba(168,85,247,.3); border-radius: 2px; }
-  .dc-dropdown::after {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-    opacity: .35; border-radius: 10px 10px 0 0;
+    max-height: 460px; overflow: hidden;
+    font-family: "gg sans", "IBM Plex Mono", monospace;
   }
   .dc-dropdown.open { display: flex; }
 
-  .dcd-section-header {
-    font-size: .5rem; letter-spacing: .18em; text-transform: uppercase;
-    color: rgba(192,132,252,.4); padding: 2px 0 4px;
-    display: flex; align-items: center; gap: 6px;
+  .dc-scroll {
+    overflow-y: auto;
+    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.15) transparent;
   }
-  .dcd-section-header::after { content: ''; flex: 1; height: 1px; background: rgba(192,132,252,.1); }
-  .dcd-track { display: flex; align-items: center; gap: 10px; }
-  .dcd-art { width: 42px; height: 42px; border-radius: 4px; object-fit: cover; flex-shrink: 0; }
-  .dcd-info { flex: 1; min-width: 0; }
-  .dcd-song { font-size: .7rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dcd-artist { font-size: .6rem; color: var(--muted); margin-top: 2px; }
-  .dcd-bar-wrap { height: 2px; background: rgba(255,255,255,.08); border-radius: 1px; overflow: hidden; margin-top: 6px; }
-  .dcd-bar { height: 100%; background: #1DB954; border-radius: 1px; transition: width 1s linear; }
-  .dcd-act { display: flex; align-items: center; gap: 10px; }
-  .dcd-act-img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; background: rgba(255,255,255,.04); flex-shrink: 0; }
-  .dcd-act-name { font-size: .58rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
-  .dcd-act-detail { font-size: .68rem; color: var(--text); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dcd-act-state { font-size: .6rem; color: var(--muted); margin-top: 1px; }
-  .dcd-act-elapsed { font-size: .58rem; color: var(--cyan); margin-top: 3px; }
-  .dcd-custom { display: flex; align-items: center; gap: 7px; font-size: .66rem; color: rgba(240,234,248,.5); font-style: italic; }
-  .dcd-divider { height: 1px; background: rgba(192,132,252,.08); }
+  .dc-scroll::-webkit-scrollbar { width: 8px; }
+  .dc-scroll::-webkit-scrollbar-track { background: transparent; }
+  .dc-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,.4); border-radius: 4px; border: 2px solid var(--dc-bg); }
 
-  @keyframes shimmer { 0%{background-position:-300px 0} 100%{background-position:300px 0} }
-  .dcd-loading {
-    height: 40px; border-radius: 4px;
-    background: linear-gradient(90deg, rgba(192,132,252,.02) 25%, rgba(192,132,252,.07) 50%, rgba(192,132,252,.02) 75%);
+  .dc-banner {
+    height: 60px; width: 100%;
+    background: linear-gradient(135deg, #5b2a8a 0%, #a855f7 60%, #c084fc 100%);
+    position: relative; flex-shrink: 0;
+  }
+
+  .dc-identity {
+    padding: 0 16px 12px; position: relative;
+  }
+  .dc-avatar-wrap {
+    width: 80px; height: 80px; position: relative;
+    margin-top: -40px;
+  }
+  .dc-avatar-wrap img {
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 6px solid var(--dc-bg);
+    display: block; object-fit: cover; background: var(--dc-bg-2);
+  }
+  .dc-status-badge {
+    position: absolute; right: 1px; bottom: 1px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--dc-offline);
+    border: 6px solid var(--dc-bg);
+    box-sizing: content-box;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dc-status-badge.online { background: var(--dc-online); }
+  .dc-status-badge.idle   { background: var(--dc-idle); }
+  .dc-status-badge.dnd    { background: var(--dc-dnd); }
+  .dc-status-badge.offline{ background: var(--dc-offline); }
+  .dc-status-badge.idle::before {
+    content:''; position:absolute; width:11px; height:11px; border-radius:50%;
+    background: var(--dc-bg); top:3px; left:2px;
+  }
+  .dc-status-badge.dnd::before {
+    content:''; position:absolute; width:10px; height:3px; border-radius:2px;
+    background: var(--dc-bg);
+  }
+
+  .dc-name-block { margin-top: 10px; }
+  .dc-display-name {
+    font-size: 1.05rem; font-weight: 700; color: var(--dc-text);
+    line-height: 1.2; letter-spacing: 0;
+  }
+  .dc-username {
+    font-size: .72rem; color: var(--dc-muted); margin-top: 1px;
+  }
+
+  .dc-section-card {
+    margin: 10px 16px 12px; padding: 10px;
+    background: var(--dc-bg-2); border-radius: 8px;
+  }
+  .dc-section-card + .dc-section-card { margin-top: -2px; }
+
+  .dc-custom-status {
+    display: flex; align-items: center; gap: 8px;
+    font-size: .8rem; color: var(--dc-text);
+    padding: 2px 0;
+  }
+  .dc-custom-status img.emoji { width: 16px; height: 16px; }
+
+  .dc-rp-header {
+    font-size: .68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .02em; color: var(--dc-header);
+    margin-bottom: 8px;
+  }
+
+  .dc-rp-row { display: flex; gap: 12px; }
+  .dc-rp-art-wrap { position: relative; flex-shrink: 0; width: 60px; height: 60px; }
+  .dc-rp-art {
+    width: 60px; height: 60px; border-radius: 8px; object-fit: cover;
+    background: var(--dc-bg-3); display: block;
+  }
+  .dc-rp-art-badge {
+    position: absolute; right: -6px; bottom: -6px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--dc-bg-3); border: 3px solid var(--dc-bg-2);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .dc-rp-art-badge img { width: 100%; height: 100%; object-fit: cover; }
+
+  .dc-rp-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+  .dc-rp-title { font-size: .82rem; font-weight: 700; color: var(--dc-text); line-height: 1.25; }
+  .dc-rp-detail { font-size: .78rem; color: var(--dc-header); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dc-rp-state { font-size: .78rem; color: var(--dc-header); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dc-rp-elapsed { font-size: .74rem; color: var(--dc-muted); margin-top: 3px; }
+
+  .dc-sp-row { display: flex; gap: 12px; align-items: center; }
+  .dc-sp-progress { margin-top: 8px; }
+  .dc-sp-bar-track { height: 4px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; }
+  .dc-sp-bar-fill { height: 100%; background: var(--dc-text); border-radius: 2px; transition: width 1s linear; }
+  .dc-sp-times { display: flex; justify-content: space-between; font-size: .62rem; color: var(--dc-muted); margin-top: 4px; }
+
+  .dc-empty {
+    padding: 20px 16px 22px; text-align: center;
+    font-size: .76rem; color: var(--dc-muted);
+  }
+
+  .dc-loading-block {
+    margin: 10px 16px 12px; height: 60px; border-radius: 8px;
+    background: linear-gradient(90deg, rgba(255,255,255,.03) 25%, rgba(255,255,255,.07) 50%, rgba(255,255,255,.03) 75%);
     background-size: 600px 100%; animation: shimmer 1.5s infinite;
   }
+  @keyframes shimmer { 0%{background-position:-300px 0} 100%{background-position:300px 0} }
 
   .footer-txt {
     font-size: .5rem; letter-spacing: .14em; text-transform: uppercase;
     color: rgba(240,234,248,.14); text-align: center;
   }
 
-  /* ── MUTE BTN ── */
   #mute-btn {
     position: fixed;
     bottom: max(20px, env(safe-area-inset-bottom, 20px)); right: 16px;
@@ -396,7 +477,6 @@
     #mute-btn:active { transform: scale(.93); background: rgba(168,85,247,.15); }
   }
 
-  /* ── RESPONSIVE ── */
   @media (min-width: 700px) {
     .links-row {
       grid-template-columns: repeat(8, 1fr);
@@ -498,7 +578,6 @@
   <div class="bottom-links">
     <div class="links-row">
 
-      <!-- YouTube -->
       <a href="https://www.youtube.com/channel/UCYmXwWSLJvguHhP-nFo69Jg" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">
           <svg viewBox="0 0 24 24" fill="rgba(240,234,248,0.75)" xmlns="http://www.w3.org/2000/svg">
@@ -509,7 +588,6 @@
         <span class="lc-handle">LakshxPlayz</span>
       </a>
 
-      <!-- Twitch -->
       <a href="https://www.twitch.tv/lakshxplayz" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">
           <svg viewBox="0 0 24 24" fill="rgba(240,234,248,0.75)" xmlns="http://www.w3.org/2000/svg">
@@ -520,7 +598,6 @@
         <span class="lc-handle">LakshxPlayz</span>
       </a>
 
-      <!-- Instagram -->
       <a href="https://www.instagram.com/lakshx_o" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">
           <svg viewBox="0 0 24 24" fill="rgba(240,234,248,0.75)" xmlns="http://www.w3.org/2000/svg">
@@ -531,7 +608,6 @@
         <span class="lc-handle">Lakshx_o</span>
       </a>
 
-      <!-- Discord (dropdown toggle) -->
       <div class="dc-card-wrap">
         <div class="link-card" id="dc-toggle-card" style="touch-action:manipulation;">
           <span class="lc-icon">
@@ -542,12 +618,27 @@
           <span class="lc-name">Discord</span>
           <span class="lc-handle" id="dc-card-handle">activity</span>
         </div>
+
         <div class="dc-dropdown" id="dc-dropdown">
-          <div class="dcd-loading" id="dcd-content"></div>
+          <div class="dc-scroll">
+            <div class="dc-banner"></div>
+            <div class="dc-identity">
+              <div class="dc-avatar-wrap">
+                <img src="yumaki_match_pfp_2_2.jpg" alt="Laksh">
+                <span class="dc-status-badge offline" id="dc-status-badge"></span>
+              </div>
+              <div class="dc-name-block">
+                <div class="dc-display-name">Laksh</div>
+                <div class="dc-username">@lakshx_o</div>
+              </div>
+            </div>
+            <div id="dcd-content">
+              <div class="dc-loading-block"></div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Steam -->
       <a href="https://steamcommunity.com/id/lakshx" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">
           <svg viewBox="0 0 24 24" fill="rgba(240,234,248,0.75)" xmlns="http://www.w3.org/2000/svg">
@@ -558,7 +649,6 @@
         <span class="lc-handle">Laksh</span>
       </a>
 
-      <!-- Roblox -->
       <a href="https://www.roblox.com/users/5496495013/profile" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">
           <svg viewBox="0 0 24 24" fill="rgba(240,234,248,0.75)" xmlns="http://www.w3.org/2000/svg">
@@ -569,18 +659,16 @@
         <span class="lc-handle">Laksh</span>
       </a>
 
-      <!-- Snapchat -->
       <a href="https://www.snapchat.com/@lakshx_o" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">
           <svg viewBox="0 0 24 24" fill="rgba(240,234,248,0.75)" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.083.045.207.09.besides.1.204.06 1.138.294 1.512.29l.027.001c.484 0 .801.196.94.526.162.395.018.815-.373 1.074-.141.091-1.395.544-3.13.544-.064 0-.126-.001-.188-.003-1.158 2.147-3.208 3.27-5.37 3.27-2.16 0-4.208-1.12-5.37-3.27-.062.002-.125.003-.188.003-1.735 0-2.989-.453-3.13-.543-.39-.26-.535-.68-.373-1.075.139-.33.456-.526.94-.526l.027-.001c.374.004 1.308-.23 1.512-.29.111-.03.199-.066.288-.109l-.002-.062c-.104-1.628-.23-3.655.3-4.847C7.86 1.07 11.216.793 12.206.793zm0 1.5c-.85 0-3.743.254-5.02 3.147-.45 1.016-.327 2.942-.234 4.409.023.38.042.716.042.957 0 .212-.024.38-.073.507-.21.546-.846.765-1.738.99-.038.01-.077.018-.116.026.332.09.79.185 1.381.185.11 0 .21-.004.303-.009.083-.004.161-.007.238-.007.145 0 .342.015.504.159.226.204.248.486.244.682l-.001.036c-.007.103-.012.208-.017.313 1.048 1.95 2.826 2.929 4.487 2.929 1.661 0 3.44-.98 4.488-2.929l-.017-.313c-.004-.15-.009-.43.243-.68.162-.144.36-.159.504-.159.078 0 .155.003.238.007.093.005.193.009.303.009.591 0 1.049-.095 1.381-.185a4.267 4.267 0 0 1-.116-.026c-.892-.225-1.528-.444-1.738-.99-.05-.127-.073-.295-.073-.507 0-.241.019-.577.042-.957.093-1.467.216-3.393-.234-4.409C15.948 2.547 13.056 2.293 12.206 2.293z"/>
+            <path d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.083.045.207.09.298.124.06 1.138.294 1.512.29l.027.001c.484 0 .801.196.94.526.162.395.018.815-.373 1.074-.141.091-1.395.544-3.13.544-.064 0-.126-.001-.188-.003-1.158 2.147-3.208 3.27-5.37 3.27-2.16 0-4.208-1.12-5.37-3.27-.062.002-.125.003-.188.003-1.735 0-2.989-.453-3.13-.543-.39-.26-.535-.68-.373-1.075.139-.33.456-.526.94-.526l.027-.001c.374.004 1.308-.23 1.512-.29.111-.03.199-.066.288-.109l-.002-.062c-.104-1.628-.23-3.655.3-4.847C7.86 1.07 11.216.793 12.206.793zm0 1.5c-.85 0-3.743.254-5.02 3.147-.45 1.016-.327 2.942-.234 4.409.023.38.042.716.042.957 0 .212-.024.38-.073.507-.21.546-.846.765-1.738.99-.038.01-.077.018-.116.026.332.09.79.185 1.381.185.11 0 .21-.004.303-.009.083-.004.161-.007.238-.007.145 0 .342.015.504.159.226.204.248.486.244.682l-.001.036c-.007.103-.012.208-.017.313 1.048 1.95 2.826 2.929 4.487 2.929 1.661 0 3.44-.98 4.488-2.929l-.017-.313c-.004-.15-.009-.43.243-.68.162-.144.36-.159.504-.159.078 0 .155.003.238.007.093.005.193.009.303.009.591 0 1.049-.095 1.381-.185a4.267 4.267 0 0 1-.116-.026c-.892-.225-1.528-.444-1.738-.99-.05-.127-.073-.295-.073-.507 0-.241.019-.577.042-.957.093-1.467.216-3.393-.234-4.409C15.948 2.547 13.056 2.293 12.206 2.293z"/>
           </svg>
         </span>
         <span class="lc-name">Snapchat</span>
         <span class="lc-handle">Lakshx_o</span>
       </a>
 
-      <!-- Spotify -->
       <a href="https://open.spotify.com/user/314rymteiostne2wjommzch2gmvm" target="_blank" rel="noopener noreferrer" class="link-card">
         <span class="lc-icon">
           <svg viewBox="0 0 24 24" fill="rgba(240,234,248,0.75)" xmlns="http://www.w3.org/2000/svg">
@@ -696,6 +784,7 @@
   const actText       = document.getElementById('act-text');
   const dcdContent    = document.getElementById('dcd-content');
   const dcHandle      = document.getElementById('dc-card-handle');
+  const dcStatusBadge = document.getElementById('dc-status-badge');
   const heroWrap      = document.getElementById('hero-activity-wrap');
   const actCountBadge = document.getElementById('act-count-badge');
   const actCountNum   = document.getElementById('act-count-num');
@@ -705,10 +794,12 @@
     const m={online:'online',idle:'idle',dnd:'do not disturb',offline:'offline'};
     statusPill.className='status-pill '+(s==='dnd'?'dnd':s==='idle'?'idle':s==='online'?'online':'');
     statusLabel.textContent='discord · '+(m[s]||s);
+    dcStatusBadge.className='dc-status-badge '+(s==='dnd'?'dnd':s==='idle'?'idle':s==='online'?'online':'offline');
   }
 
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function fmtT(ms){ const s=Math.floor(ms/1e3),m=Math.floor(s/60),h=Math.floor(m/60); return h>0?h+'h '+(m%60)+'m':m>0?m+'m '+(s%60)+'s':s+'s'; }
+  function fmtClock(ms){ const tot=Math.max(0,Math.floor(ms/1e3)); const m=Math.floor(tot/60), s=tot%60; return m+':'+String(s).padStart(2,'0'); }
 
   function renderHeroActivities(sp, others, status) {
     heroWrap.querySelectorAll('.act-extra').forEach(el => el.remove());
@@ -761,49 +852,77 @@
     renderDcHandle(sp, others);
 
     let html='';
+
     if (custom&&custom.state) {
-      const em = custom.emoji ? (custom.emoji.id ? `<img src="https://cdn.discordapp.com/emojis/${custom.emoji.id}.webp?size=20" style="width:14px;height:14px;vertical-align:middle;" alt="">` : custom.emoji.name) : '';
-      html += `<div class="dcd-custom"><span>${em}</span><span>${esc(custom.state)}</span></div>`;
+      const em = custom.emoji ? (custom.emoji.id ? `<img class="emoji" src="https://cdn.discordapp.com/emojis/${custom.emoji.id}.webp?size=20" alt="">` : custom.emoji.name) : '';
+      html += `<div class="dc-section-card"><div class="dc-custom-status"><span>${em}</span><span>${esc(custom.state)}</span></div></div>`;
     }
+
     if (sp) {
-      if (html) html+='<div class="dcd-divider"></div>';
-      html+=`<div class="dcd-section-header">spotify</div>`;
-      const pct = (sp.timestamps.start&&sp.timestamps.end) ? Math.min(100,((Date.now()-sp.timestamps.start)/(sp.timestamps.end-sp.timestamps.start))*100) : 0;
-      html+=`<div class="dcd-track">
-        <img class="dcd-art" src="${esc(sp.album_art_url||'')}" alt="" onerror="this.style.display='none'">
-        <div class="dcd-info">
-          <div class="dcd-song">${esc(sp.song)}</div>
-          <div class="dcd-artist">${esc(sp.artist)}</div>
-          <div class="dcd-bar-wrap"><div class="dcd-bar" id="dcd-sp-bar" style="width:${pct}%"></div></div>
+      const hasTimes = sp.timestamps && sp.timestamps.start && sp.timestamps.end;
+      const elapsed = hasTimes ? Date.now()-sp.timestamps.start : 0;
+      const total = hasTimes ? sp.timestamps.end-sp.timestamps.start : 0;
+      const pct = hasTimes ? Math.min(100,(elapsed/total)*100) : 0;
+      html += `<div class="dc-section-card">
+        <div class="dc-rp-header">Listening to Spotify</div>
+        <div class="dc-sp-row">
+          <div class="dc-rp-art-wrap">
+            <img class="dc-rp-art" src="${esc(sp.album_art_url||'')}" alt="" onerror="this.style.visibility='hidden'">
+            <div class="dc-rp-art-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            </div>
+          </div>
+          <div class="dc-rp-info">
+            <div class="dc-rp-title">${esc(sp.song)}</div>
+            <div class="dc-rp-detail">by ${esc(sp.artist)}</div>
+            ${sp.album?`<div class="dc-rp-state">on ${esc(sp.album)}</div>`:''}
+          </div>
         </div>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        ${hasTimes?`<div class="dc-sp-progress">
+          <div class="dc-sp-bar-track"><div class="dc-sp-bar-fill" id="dc-sp-bar" style="width:${pct}%"></div></div>
+          <div class="dc-sp-times"><span id="dc-sp-elapsed">${fmtClock(elapsed)}</span><span>${fmtClock(total)}</span></div>
+        </div>`:''}
       </div>`;
-      if (sp.timestamps.start&&sp.timestamps.end) {
-        const tot=sp.timestamps.end-sp.timestamps.start;
-        spTimer=setInterval(()=>{ const b=document.getElementById('dcd-sp-bar'); if(!b){clearInterval(spTimer);return;} b.style.width=Math.min(100,((Date.now()-sp.timestamps.start)/tot)*100)+'%'; },1000);
-      }
     }
+
     if (others.length>0) {
-      if (html) html+='<div class="dcd-divider"></div>';
-      html+=`<div class="dcd-section-header">${others.length>1?others.length+' activities':'activity'}</div>`;
-      others.forEach((act,idx)=>{
+      others.forEach((act)=>{
         if (!act.name) return;
-        if (idx>0) html+='<div class="dcd-divider"></div>';
-        const li2=act.assets?.large_image ? (act.assets.large_image.startsWith('mp:external/') ? 'https://media.discordapp.net/external/'+act.assets.large_image.slice(12) : `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.webp`) : '';
+        const li2 = act.assets?.large_image ? (act.assets.large_image.startsWith('mp:external/') ? 'https://media.discordapp.net/external/'+act.assets.large_image.slice(12) : `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.webp`) : '';
+        const si2 = act.assets?.small_image ? (act.assets.small_image.startsWith('mp:external/') ? 'https://media.discordapp.net/external/'+act.assets.small_image.slice(12) : `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.small_image}.webp`) : '';
         const el=act.timestamps?.start ? Date.now()-act.timestamps.start : null;
-        html+=`<div class="dcd-act">
-          ${li2?`<img class="dcd-act-img" src="${esc(li2)}" alt="" onerror="this.style.display='none'">` : '<div class="dcd-act-img"></div>'}
-          <div style="flex:1;min-width:0;">
-            <div class="dcd-act-name">${esc(act.name)}</div>
-            ${act.details?`<div class="dcd-act-detail">${esc(act.details)}</div>`:''}
-            ${act.state?`<div class="dcd-act-state">${esc(act.state)}</div>`:''}
-            ${el!==null?`<div class="dcd-act-elapsed">▶ ${fmtT(el)} elapsed</div>`:''}
+        html+=`<div class="dc-section-card">
+          <div class="dc-rp-header">Playing a Game</div>
+          <div class="dc-rp-row">
+            <div class="dc-rp-art-wrap">
+              ${li2?`<img class="dc-rp-art" src="${esc(li2)}" alt="" onerror="this.style.visibility='hidden'">`:'<div class="dc-rp-art"></div>'}
+              ${si2?`<div class="dc-rp-art-badge"><img src="${esc(si2)}" alt=""></div>`:''}
+            </div>
+            <div class="dc-rp-info">
+              <div class="dc-rp-title">${esc(act.name)}</div>
+              ${act.details?`<div class="dc-rp-detail">${esc(act.details)}</div>`:''}
+              ${act.state?`<div class="dc-rp-state">${esc(act.state)}</div>`:''}
+              ${el!==null?`<div class="dc-rp-elapsed">${fmtT(el)} elapsed</div>`:''}
+            </div>
           </div>
         </div>`;
       });
     }
-    if (!html) html='<p style="font-size:.64rem;color:var(--muted);text-align:center;padding:6px 0;">no activity right now</p>';
+
+    if (!html) html='<div class="dc-empty">No activity right now</div>';
     dcdContent.innerHTML=html;
+
+    if (sp && sp.timestamps && sp.timestamps.start && sp.timestamps.end) {
+      const tot=sp.timestamps.end-sp.timestamps.start;
+      spTimer=setInterval(()=>{
+        const b=document.getElementById('dc-sp-bar');
+        const t=document.getElementById('dc-sp-elapsed');
+        if(!b){clearInterval(spTimer);return;}
+        const e=Date.now()-sp.timestamps.start;
+        b.style.width=Math.min(100,(e/tot)*100)+'%';
+        if (t) t.textContent=fmtClock(e);
+      },1000);
+    }
   }
 
   const dcToggle = document.getElementById('dc-toggle-card');
